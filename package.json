@@ -1,0 +1,22 @@
+{
+  "name": "kille_card_game",
+  "version": "1.0.0",
+  "description": "A Simple Kille Card Game, where you play against three computer players.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "npx --node-options=--experimental-vm-modules jest --verbose || exit 0",
+    "test:report": "node generateJestReport.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kkwydragonflame/kille_card_game.git"
+  },
+  "author": "Johanna Eriksson <je224gs@student.lnu.se>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kkwydragonflame/kille_card_game/issues"
+  },
+  "homepage": "https://github.com/kkwydragonflame/kille_card_game#readme"
+}
