@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
+    "dev": "vite",
     "test": "npx --node-options=--experimental-vm-modules jest --verbose || exit 0",
     "test:report": "node generateJestReport.js"
   },
@@ -18,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/kkwydragonflame/kille_card_game/issues"
   },
-  "homepage": "https://github.com/kkwydragonflame/kille_card_game#readme"
+  "homepage": "https://github.com/kkwydragonflame/kille_card_game#readme",
+  "dependencies": {
+    "vite": "^5.4.9"
+  }
 }
