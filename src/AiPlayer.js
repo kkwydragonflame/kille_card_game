@@ -1,10 +1,8 @@
-export class AiPlayer extends Player {
-  constructor(name) {
-    super(name)
-  }
-
+export class AiPlayStrategy {
   chooseCardToPlay(eligibleCards) {
-    const cardsToChooseFrom = this.cards.push(card => card.rank >= highestCard.rank)
+    const cardsToChooseFrom = []
+    
+    cardsToChooseFrom.push(card => eligibleCards.includes(card))
 
     const index = Math.floor(Math.random() * cardsToChooseFrom.length)
 

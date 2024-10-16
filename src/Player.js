@@ -2,13 +2,10 @@ export class Player {
   #name
   #cards
 
-  constructor(name) {
-    if (this.constructor === Player) {
-      throw new Error('Player is an abstract class and cannot be instantiated directly.')
-    }
-
+  constructor(name, playStrategy) {
     this.#name = name
     this.#cards = []
+    this.playStrategy = playStrategy
   }
 
   get name() {
@@ -19,7 +16,7 @@ export class Player {
     return [...this.#cards]
   }
 
-  addCard(card) {
+  addCardToHand(card) {
     this.#cards.push(card)
   }
 
@@ -35,7 +32,7 @@ export class Player {
     if (eligibleCards.length === 0) {
       card = this.#playLowestCard()
     } else {
-      this.#validateCard(this.#chooseCardToPlay(eligibleCards), eligibleCards)
+      this.#validateCard(this.playStrategy.#chooseCardToPlay(), eligibleCards)
     }
 
     return this.#removeCardFromHand(card)

@@ -6,7 +6,7 @@ export class CardTable {
   constructor() {
     this.#players = []
     this.#cardsInPlay = []
-    this.#cardDeck = new CardDeck('kille')
+    this.#cardDeck = new CardDeck('kille') // Bound to this specific implementation. Good or bad?
   }
 
   playRound(startingPlayer = null) {
@@ -24,7 +24,7 @@ export class CardTable {
   #dealCards() {
     for (let i = 0; i < 5; i++) {
       this.#players.forEach(player => {
-        player.addCard(this.#cardDeck.draw())
+        player.addCardToHand(this.#cardDeck.deal())
       })
     }
   }
@@ -32,7 +32,7 @@ export class CardTable {
   // Make objects in array, to keep track of who played what card?
   #playCards() {
     this.#players.forEach(player => {
-      this.#cardsInPlay.push(player.playCard(this.#getHighestCard()))
+      this.#cardsInPlay.push({player, card: player.playCard(this.#getHighestCard())})
     })
   }
 
@@ -47,8 +47,8 @@ export class CardTable {
   }
 
   #determineWinner() {
-    // check who played the highest card
-    // return the winner
+    const highestCard = this.#getHighestCard()
+    return highestCard.player
   }
 
   #addCardsBackToDeck() {
