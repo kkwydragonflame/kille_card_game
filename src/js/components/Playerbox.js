@@ -1,7 +1,20 @@
 const template = document.createElement('template')
 template.innerHTML = `
-<div name="playerName"></div>
-<div name="playerCards"></div>`
+<style>
+  :host {
+    display: flex;
+    flex-direction: column;
+    margin: 0.5em;
+    align-items: center;
+  }
+  .playerCards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+</style>
+<div class="playerName"></div>
+<div class="playerCards"></div>`
 
 customElements.define('player-box', class extends HTMLElement {
   constructor() {
@@ -19,24 +32,24 @@ customElements.define('player-box', class extends HTMLElement {
    * @param {String} name
    */
   set playerName(name) {
-    this.shadowRoot.querySelector('[name=playerName]').textContent = name
+    this.shadowRoot.querySelector('.playerName').textContent = name
   }
 
   /**
    * @param {imgElement} cardElement 
    */
   addCard(cardElement) {
-    this.shadowRoot.querySelector('[name=playerCards]').appendChild(cardElement)
+    this.shadowRoot.querySelector('.playerCards').appendChild(cardElement)
   }
 
   /**
    * @param {imgElement} cardElement 
    */
   removeCard(cardElement) {
-    this.shadowRoot.querySelector('[name=playerCards]').removeChild(cardElement)
+    this.shadowRoot.querySelector('.playerCards').removeChild(cardElement)
   }
 
   clearCards() {
-    this.shadowRoot.querySelector('[name=playerCards]').innerHTML = ''
+    this.shadowRoot.querySelector('.playerCards').innerHTML = ''
   }
 })
