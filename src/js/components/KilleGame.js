@@ -1,42 +1,86 @@
 /**
+ * A custom webbcomponent where you can play the card game Kille, against three computer players.
  * @author Johanna Eriksson <je224gs@student.lnu.se>
  * @version 1.0.0
  */
 
-// Define template
+import './Playerbox.js'
+
 const template = document.createElement('template')
 template.innerHTML = `
 <style>
   :host {
-    width: 80%;
-    height: 80%;
+    display: block;
+    margin: auto;
+    width: 80vw;
+    height: 80vh;
     background-color: lightblue;
   }
   .game {
     display: grid;
-    grid-template-columns: 1fr 2fr 1fr;
-    grid-template-rows: 1fr auto 1fr;
+    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-rows: 1fr 2fr 1fr;
     grid-template-areas:
       ". top ."
       "left center right"
       ". bottom .";
-    gap: 1em;
+    gap: 0.5em;
+    height: 100%;
   }
   * {
     border: 1px solid red;
   }
   .cardtable {
-    background-color: green;
-    height: 100px;
-    width: 100px;
+    background-color: forestgreen;
+    border: 3px solid black;
+    border-radius: 10px;
+    
+    transform: perspective(1000px) rotateX(20deg);
+    transform-origin: center;
+  }
+  .playerbox {
+    background-color: grey;
+    height: 100%;
+  }
+  .card-slot {
+    position: absolute;
+    width: 10%;
+    height: 25%;
+    border: 2px solid grey;
+    border-radius: 5px;
+  }
+  #slot-left {
+    left: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  #slot-top {
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+  } 
+  #slot-right {
+    right: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  #slot-bottom {
+    bottom: 10%;
+    left: 50%;
+    transform: translateX(-50%);
   }
 </style>
 <div class="game">
-  <div class="playerbox1" style="grid-area: left;"></div>
-  <div class="playerbox2" style="grid-area: top;"></div>
-  <div class="playerbox3" style="grid-area: right;"></div>
-  <div class="playerbox4" style="grid-area: bottom;"></div>
-  <div class="cardtable" style="grid-area: center;"></div>
+  <player-box style="grid-area: left;"></player-box>
+  <player-box style="grid-area: top;"></player-box>
+  <player-box style="grid-area: right;"></player-box>
+  <player-box style="grid-area: bottom;"></player-box>
+  <div class="cardtable" style="grid-area: center;">
+    <div class="card-slot" id="slot-left"></div>
+    <div class="card-slot" id="slot-top"></div>
+    <div class="card-slot" id="slot-right"></div>
+    <div class="card-slot" id="slot-bottom"></div>
+  </div>
 </div>
 `
 
@@ -51,4 +95,6 @@ customElements.define('kille-game', class extends HTMLElement {
   connectedCallback() {
     console.log('KilleGame connected')
   }
+
+  #setupGame() {}
 })
