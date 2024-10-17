@@ -10,10 +10,12 @@ export class CardTable {
   }
 
   playRound(startingPlayer = null) {
+    // emit starting round
     this.#shuffleDeck()
-    this.#dealCards()
+    this.#dealCards() // emit the cards dealt to each player
     // determine starting player
-    this.#playCards()
+    // emit active player
+    this.#playCards() // emit the cards played by each player
     this.#endRound()
   }
 
