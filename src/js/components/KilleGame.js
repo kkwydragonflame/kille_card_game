@@ -5,6 +5,7 @@
  */
 
 import './Playerbox.js'
+import '../CardTable.js'
 
 const template = document.createElement('template')
 template.innerHTML = `
@@ -18,7 +19,7 @@ template.innerHTML = `
   }
   .game {
     display: grid;
-    grid-template-columns: 1fr 3fr 1fr;
+    grid-template-columns: 1fr 2fr 1fr;
     grid-template-rows: 1fr 2fr 1fr;
     grid-template-areas:
       ". top ."
@@ -34,7 +35,7 @@ template.innerHTML = `
     background-color: forestgreen;
     border: 3px solid black;
     border-radius: 10px;
-    
+
     transform: perspective(1000px) rotateX(20deg);
     transform-origin: center;
   }
@@ -96,5 +97,9 @@ customElements.define('kille-game', class extends HTMLElement {
     console.log('KilleGame connected')
   }
 
-  #setupGame() {}
+  #setupGame() {
+    // create players
+    // create card table
+    // call playRound()
+  }
 })

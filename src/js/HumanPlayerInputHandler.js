@@ -1,4 +1,4 @@
-export class UI {
+export class HumanPlayerInputHandler {
   displayMessage(message) {
     console.log(message)
   }
