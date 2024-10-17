@@ -49,6 +49,10 @@ customElements.define('player-box', class extends HTMLElement {
     this.shadowRoot.querySelector('.playerCards').removeChild(cardElement)
   }
 
+  getCardElements() {
+    return this.shadowRoot.querySelector('.playerCards img')
+  }
+
   clearCards() {
     this.shadowRoot.querySelector('.playerCards').innerHTML = ''
   }

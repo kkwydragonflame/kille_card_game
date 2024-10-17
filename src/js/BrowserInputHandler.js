@@ -1,36 +1,34 @@
 import EventEmitter from 'events'
 
-// Change name to BrowserInputHandler
-export class HumanPlayerInputHandler extends EventEmitter {
+export class BrowserInputHandler extends EventEmitter {
   displayMessage(message) {
-    console.log(message)
+    emit(message)
   }
 
-  waitForUserInput(eligibleCards, playerName) {
+  waitForUserInput(playerName) {
     return new Promise(resolve => {
 
       const cards = this.#getPlayerCards(playerName)
 
-      this.#addCardListeners(cards)
-
       this.cardClickListener = event => {
         const card = event.target
-        if (eligibleCards.includes(card)) {
-          this.#removeCardListeners(cards)
-          resolve(card)
-        }
+        this.#removeCardListeners(cards)
+        resolve(card)
       }
+
+      this.#addCardListeners(cards)
+
     })
   }
 
   #getPlayerCards(playerName) {
-    const playerElement = document.querySelectorAll('player-box').find(playerBox => playerBox.playerName === playerName)
+    const playerElement = document.querySelector(`player-box[player-name="${playerName}"]`)
     
     if (!playerElement) {
       throw new Error('Element not found for player: ' + playerName)
     }
     
-    return playerElement.shadowRoot.querySelectorAll('.playerCards img')
+    return playerElement.getCardElements()
   }
 
   #addCardListeners(cards) {
