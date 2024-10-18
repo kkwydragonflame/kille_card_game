@@ -1,5 +1,6 @@
 import EventEmitter from 'events'
 
+// Needs refactoring to use EventTarget instead, to work in browser
 export class BrowserInputHandler extends EventEmitter {
   displayMessage(message) {
     emit(message)
