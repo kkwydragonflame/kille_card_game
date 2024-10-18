@@ -23,7 +23,7 @@ export class Player {
     if (eligibleCards.length === 0) {
       card = this.#playLowestCard()
     } else {
-      this.playStrategy.chooseCardToPlay(eligibleCards)
+      this.playStrategy.chooseCardToPlay(eligibleCards, this.cards)
     }
 
     return this.#removeCardFromHand(card)
