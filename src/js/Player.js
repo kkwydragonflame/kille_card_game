@@ -14,23 +14,24 @@ export class Player {
 
   /**
    * Method to play a card from the player's hand.
-   * @param {Card} highestCard The highest card currently in play.
-   * @returns {Card} The card played by the player.
+   * @param {CardObject} highestCard The highest card currently in play.
+   * @returns {CardObject} The card played by the player.
    */
   playCard(highestCard) {
     const eligibleCards = this.#getEligibleCards(highestCard)
 
+    let card
     if (eligibleCards.length === 0) {
       card = this.#playLowestCard()
     } else {
-      this.playStrategy.chooseCardToPlay(eligibleCards, this.cards)
+      card = this.playStrategy.chooseCardToPlay(eligibleCards, this.cards)
     }
 
     return this.#removeCardFromHand(card)
   }
 
   #getEligibleCards(highestCard) {
-    return this.#cards.filter(card => card.rank >= highestCard.rank)
+    return highestCard === undefined ? this.#cards : this.#cards.filter(card => card.valueOf() >= highestCard.valueOf())
   }
 
   #playLowestCard() {
@@ -44,7 +45,7 @@ export class Player {
       return card
     }
   }
-  
+
   addCardToHand(card) {
     this.#cards.push(card)
   }

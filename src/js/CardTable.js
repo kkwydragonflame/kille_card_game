@@ -3,16 +3,18 @@ export class CardTable {
   #cardsInPlay
   #cardDeck
 
-  constructor() {
-    this.#players = []
+  constructor(deck, players, onCardPlayed, onRoundOver) {
+    this.#players = players
     this.#cardsInPlay = []
-    this.#cardDeck = new CardDeck('kille')
+    this.#cardDeck = deck
+    this.onCardPlayed = onCardPlayed
+    this.onRoundOver = onRoundOver
   }
 
   playRound(startingPlayer) {
     this.#shuffleDeck()
     this.#dealCards()
-    this.#getStartingPlayer()
+    startingPlayer = this.#getStartingPlayer()
     this.#playCards(startingPlayer)
     this.#endRound()
   }
@@ -24,32 +26,36 @@ export class CardTable {
   #dealCards() {
     for (let i = 0; i < 5; i++) {
       this.#players.forEach(player => {
-        player.addCardToHand(this.#cardDeck.deal())
+        player.addCardToHand(this.#cardDeck.dealCard())
       })
     }
   }
 
   #getStartingPlayer() {
     if (!this.#getHighestCard()) {
-      return this.#players[Math.floor(Math.random() * this.#players.length)]
+      const player = this.#players[Math.floor(Math.random() * this.#players.length)]
+      console.log(`${player.name} starts the round!`)
+      return player
     }
     return this.#getCurrentRoundWinner()
   }
 
   #playCards(startingPlayer) {
     // start with the player who played the highest card in the previous round
-    let playerIndex = indexOf(startingPlayer)
-    let roundOver = false
+    let playerIndex = this.#players.indexOf(startingPlayer)
+    let cardsPlayed = 0
 
-    while (!roundOver) {
+    while (cardsPlayed < this.#players.length) {
       const player = this.#players[playerIndex]
       const playedCard = player.playCard(this.#getHighestCard())
       this.#cardsInPlay.push(playedCard)
 
-      // Have a print method to call here, to print out the cards played by each player.
-      // this.onCardPlayed({ player: player.name, card: card })
+      // Send the played card to the onCardPlayed callback.
+      this.onCardPlayed(player, playedCard)
 
-      playerIndex++
+      cardsPlayed++
+
+      playerIndex = (playerIndex + 1) % this.#players.length
     }
 
     this.#endRound()

@@ -3,6 +3,7 @@ import { Player } from './Player.js'
 import { HumanPlayStrategy } from './HumanPlayStrategy.js'
 import { AiPlayStrategy } from './AiPlayStrategy.js'
 import { ConsoleInputHandler } from './ConsoleInputHandler.js'
+import { DeckGenerator } from 'laboration2/src/deckGenerator.js'
 
 export class KilleGame {
   startGame() {
@@ -12,7 +13,8 @@ export class KilleGame {
 
   #setupGame() {
     this.players = this.#generatePlayers()
-    this.cardTable = new CardTable(this.players, this.onCardPlayed, this.onRoundOver)
+    this.deck = DeckGenerator.generateDeck('kille')
+    this.cardTable = new CardTable(this.deck, this.players, this.onCardPlayed, this.onRoundOver)
   }
 
   #generatePlayers() {
@@ -27,7 +29,11 @@ export class KilleGame {
   }
 
   onCardPlayed(player, card) {
-    console.log(`${player.name} played ${card.name}`)
+    console.log(`${player.name} played ${card.toString()}`)
+  }
+
+  displayMessage(message) {
+    console.log(message)
   }
 
   onRoundOver(player) {

@@ -1,4 +1,4 @@
-import { KilleGame } from './js/KilleGame.js'
+import { KilleGame } from './js/killeGame.js'
 
 const game = new KilleGame()
 

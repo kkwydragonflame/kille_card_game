@@ -1,11 +1,16 @@
 export class AiPlayStrategy {
-  chooseCardToPlay(eligibleCards) {
-    const cardsToChooseFrom = []
-    
-    cardsToChooseFrom.push(card => eligibleCards.includes(card))
+  chooseCardToPlay(eligibleCards, cardsInHand) {
+    let validChoice = false
+    let AiCardChoice = null
 
-    const index = Math.floor(Math.random() * cardsToChooseFrom.length)
+    while (!validChoice) {
+      AiCardChoice = cardsInHand[Math.floor(Math.random() * cardsInHand.length)]
 
-    return chosenCard = cardsToChooseFrom[index]
+      if (eligibleCards.includes(AiCardChoice)) {
+        validChoice = true
+      }
+    }
+
+    return AiCardChoice
   }
 }
