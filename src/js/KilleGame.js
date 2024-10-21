@@ -5,7 +5,6 @@ import { AiPlayStrategy } from './AiPlayStrategy.js'
 import { ConsoleInputHandler } from './ConsoleInputHandler.js'
 
 export class KilleGame {
-
   startGame() {
     this.#setupGame()
     this.cardTable.playRound()
@@ -15,15 +14,16 @@ export class KilleGame {
     this.players = this.#generatePlayers()
     this.cardTable = new CardTable(this.players, this.onCardPlayed, this.onRoundOver)
   }
-  
+
   #generatePlayers() {
-    inputHandler = new ConsoleInputHandler()
-    return players = [
+    const inputHandler = new ConsoleInputHandler()
+    const players = [
       new Player('You', new HumanPlayStrategy(inputHandler)),
       new Player('Bob AI', new AiPlayStrategy()),
       new Player('Karen AI', new AiPlayStrategy()),
       new Player('Mikael AI', new AiPlayStrategy())
     ]
+    return players
   }
 
   onCardPlayed(player, card) {

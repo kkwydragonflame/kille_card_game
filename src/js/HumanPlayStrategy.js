@@ -8,7 +8,7 @@ export class HumanPlayStrategy {
   async chooseCardToPlay(eligibleCards, cards) {
     this.#inputHandler.displayMessage('Choose a card to play.')
 
-    userChoice = await this.#inputHandler.waitForUserInput(cards)
+    const userChoice = await this.#inputHandler.waitForUserInput(cards)
 
     if (!eligibleCards.includes(userChoice)) {
       this.#inputHandler.displayMessage('Card is not a valid choice.')
