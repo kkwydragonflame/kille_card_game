@@ -26,20 +26,36 @@ describe('HumanPlayStrategy', () => {
 
   test('should return chosen card if it is valid', () => {
     // Simulate user choosing the first card
-    mockInputHandler.waitForUserInput.mockResolvedValue(mockCards[11])
+    mockInputHandler.waitForUserInput.mockReturnValue(mockEligibleCards[0])
 
     const chosenCard = humanPlayStrategy.chooseCardToPlay(mockEligibleCards, mockCards)
 
-    expect(chosenCard).toEqual(mockCards[0])
+    expect(chosenCard).toEqual(mockEligibleCards[0])
+
+    expect(mockInputHandler.displayMessage).toHaveBeenCalledWith('Choose a card to play.')
   })
 
   test('should prompt again if an invalid card is chosen', () => {
     mockInputHandler.waitForUserInput
-      .mockResolvedValueOnce(mockCards[0]) // First choice is invalid
-      .mockResolvedValueOnce(mockCards[1]) // Second choice is valid
+      .mockReturnValueOnce(mockCards[0]) // First choice is invalid
+      .mockReturnValueOnce(mockEligibleCards[1]) // Second choice is valid
 
     const chosenCard = humanPlayStrategy.chooseCardToPlay(mockEligibleCards, mockCards)
 
-    expect(chosenCard).toEqual(mockCards[1])
+    expect(chosenCard).toEqual(mockEligibleCards[1])
+
+    expect(mockInputHandler.displayMessage).toHaveBeenCalledWith('Card is not a valid choice. Please select again.')
+  })
+
+  test('should prompt to play lowest card if no eligible cards', () => {
+    const lowestCard = mockCards[0]
+
+    mockInputHandler.waitForUserInput.mockReturnValue(lowestCard)
+
+    const chosenCard = humanPlayStrategy.chooseCardToPlay([], mockCards)
+
+    expect(chosenCard).toEqual(lowestCard)
+
+    // expect(mockInputHandler.displayMessage).toHaveBeenCalledWith('You have no eligible cards. You must sacrifice your lowest card.')
   })
 })

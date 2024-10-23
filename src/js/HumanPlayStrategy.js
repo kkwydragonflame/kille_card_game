@@ -2,22 +2,23 @@ export class HumanPlayStrategy {
   #inputHandler
 
   constructor(inputHandler) {
-    this.#inputHandler = inputHandler // Need a provided User Interface component to interact with the user.
+    this.#inputHandler = inputHandler
   }
 
   chooseCardToPlay(eligibleCards, cards) {
-    this.#displayChoiceMessage(eligibleCards)
-    let isValid = false
-    let userChoice
+    // this.#displayChoiceMessage(eligibleCards)
+    // let isValid = false
+    // let userChoice
 
-    const lowestCard = this.#getLowestCard(cards)
+    // const lowestCard = this.#getLowestCard(cards)
 
-    while (!isValid) {
-      userChoice = this.#inputHandler.waitForUserInput(cards)
-      isValid = this.#isChoiceValid(userChoice, eligibleCards, lowestCard)
-    }
+    // while (!isValid) {
+    //   userChoice = this.#inputHandler.waitForUserInput(cards)
+    //   isValid = this.#isChoiceValid(userChoice, eligibleCards, lowestCard)
+    // }
 
-    return userChoice
+    // return userChoice
+    return eligibleCards[0]
   }
 
   #displayChoiceMessage(eligibleCards) {

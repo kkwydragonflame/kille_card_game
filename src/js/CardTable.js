@@ -50,11 +50,10 @@ export class CardTable {
 
     while (cardsPlayed < this.#players.length) {
       const player = this.#players[playerIndex]
-      const playedCard = player.playCard(this.#getHighestCard())
+      const playedCard = player.playCard(this.#getHighestCard()) // Not correctly setting highest card on subsequent rounds.
       this.#cardsInPlay.push(playedCard)
 
       // Send the played card to the onCardPlayed callback.
-      console.log(playedCard)
       this.onCardPlayed(player, playedCard)
 
       cardsPlayed++
@@ -62,7 +61,8 @@ export class CardTable {
       playerIndex = (playerIndex + 1) % this.#players.length
     }
 
-    this.#endRound()
+    // endTurn()
+    // playCards should repeat until all players only have one card left.
   }
 
   #getHighestCard() {
@@ -84,10 +84,10 @@ export class CardTable {
   }
 
   #addCardsBackToDeck() {
-    this.#cardsInPlay.forEach(card => this.#cardDeck.add(card))
+    this.#cardsInPlay.forEach(card => this.#cardDeck.addCardToBottomOfDeck(card))
   }
 
-  #calculatePoints() {
+  #calculatePoints() { // Do not call this method before the last round.
     this.#players.forEach(player => {
       player.addPoints(player.cards.forEach(card => card.valueOf()))
       // Have a print method to call here, to print out the points for each player, and if they get a strike.

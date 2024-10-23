@@ -29,7 +29,7 @@ export class KilleGame {
   }
 
   onCardPlayed(player, card) {
-    console.log(`${player.name} played ${card.toString()}`) // Violates Law of Demeter? Add printing value of card?
+    console.log(`${player.name} played a ${card.toString()} (value: ${card.valueOf()})`) // Violates Law of Demeter? Add printing value of card?
   }
 
   displayMessage(message) {
