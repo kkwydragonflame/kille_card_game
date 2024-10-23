@@ -6,26 +6,41 @@ export class HumanPlayStrategy {
   }
 
   async chooseCardToPlay(eligibleCards, cards) {
+    this.#displayChoiceMessage(eligibleCards)
+
+    const userChoice = await this.#inputHandler.waitForUserInput(cards)
+
+    const lowestCard = this.#getLowestCard(cards)
+
+    if (!this.#isChoiceValid(userChoice, eligibleCards, lowestCard)) {
+      return this.chooseCardToPlay(eligibleCards, cards)
+    }
+
+    return userChoice
+  }
+
+  #displayChoiceMessage(eligibleCards) {
     if (eligibleCards.length === 0) {
       this.#inputHandler.displayMessage('You have no eligible cards. You must sacrifice your lowest card.')
     } else {
       this.#inputHandler.displayMessage('Choose a card to play.')
     }
+  }
 
-    const userChoice = await this.#inputHandler.waitForUserInput(cards)
+  #getLowestCard(cards) {
+    return cards.sort((a, b) => a.rank - b.rank)[0]
+  }
 
-    const lowestCard = cards.sort((a, b) => a.rank - b.rank)[0]
-
+  #isChoiceValid(userChoice, eligibleCards, lowestCard) {
     if (!eligibleCards.includes(userChoice)) {
       if (eligibleCards.length === 0 && userChoice !== lowestCard) {
         this.#inputHandler.displayMessage('You must play your lowest card.')
-        return this.chooseCardToPlay(eligibleCards)
+        return false
       } else {
         this.#inputHandler.displayMessage('Card is not a valid choice. Please select again.')
-        return this.chooseCardToPlay(eligibleCards)
+        return false
       }
     }
-
-    return userChoice
+    return true
   }
 }
