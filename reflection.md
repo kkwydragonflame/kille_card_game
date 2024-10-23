@@ -1,0 +1,1 @@
+Considered refactoring ai players to use same strategy to save resources, but kept as separate as keeps encapsulation, follows OCP, avoids hidden dependencies, follows SRP and promotes testability.

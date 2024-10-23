@@ -21,7 +21,7 @@ export class Player {
     const eligibleCards = this.#getEligibleCards(highestCard)
 
     let card
-    if (eligibleCards.length === 0) {
+    if (eligibleCards.length === 0) { // Logic fault here, should be if the player has no eligible cards.
       card = this.#playLowestCard()
     } else {
       card = this.playStrategy.chooseCardToPlay(eligibleCards, this.cards)
@@ -30,8 +30,9 @@ export class Player {
     return this.#removeCardFromHand(card)
   }
 
+  // atm this returns all cards in hand if no highestCard is provided, should be empty array. Only on the first round should the player be able to play any card.
   #getEligibleCards(highestCard) {
-    return highestCard === undefined ? this.#cards : this.#cards.filter(card => card.valueOf() >= highestCard.valueOf())
+    return !highestCard ? this.#cards : this.#cards.filter(card => card.valueOf() >= highestCard.valueOf())
   }
 
   #playLowestCard() {

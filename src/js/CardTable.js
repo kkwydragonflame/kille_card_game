@@ -12,9 +12,12 @@ export class CardTable {
   }
 
   playRound(startingPlayer) {
+    if (!startingPlayer) {
+      startingPlayer = this.#getStartingPlayer()
+    }
     this.#shuffleDeck()
     this.#dealCards()
-    startingPlayer = this.#getStartingPlayer()
+    // startingPlayer = this.#getStartingPlayer()
     this.#playCards(startingPlayer)
     this.#endRound()
   }
