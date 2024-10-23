@@ -6,7 +6,6 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "vite",
     "test": "npx --node-options=--experimental-vm-modules jest --verbose || exit 0",
     "test:report": "node generateJestReport.js"
   },
@@ -21,7 +20,8 @@
   },
   "homepage": "https://github.com/kkwydragonflame/kille_card_game#readme",
   "dependencies": {
-    "laboration2": "github:kkwydragonflame/L2"
+    "laboration2": "github:kkwydragonflame/L2",
+    "readline-sync": "^1.4.10"
   },
   "devDependencies": {
     "eslint": "^8.57.1",

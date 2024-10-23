@@ -1,18 +1,11 @@
-import readline from 'readline'
+import readlineSync from 'readline-sync'
 
 export class ConsoleInputHandler {
-  constructor() {
-    this.rl = readline.createInterface({
-      input: process.stdin,
-      output: process.stdout
-    })
-  }
-
   displayMessage(message) {
     console.log(message)
   }
 
-  async waitForUserInput(cards) {
+  waitForUserInput(cards) {
     let isValidInput = false
     let cardIndex = -1
 
@@ -20,7 +13,7 @@ export class ConsoleInputHandler {
 
     while (!isValidInput) {
       try {
-        const userInput = await this.#getUserInput()
+        const userInput = readlineSync.question('Please enter the number of the card you want to play: ')
 
         isValidInput = this.#validateInput(userInput, cards.length)
 
@@ -34,7 +27,6 @@ export class ConsoleInputHandler {
       }
     }
 
-    this.close()
     return cards[cardIndex]
   }
 
@@ -44,20 +36,8 @@ export class ConsoleInputHandler {
     })
   }
 
-  #getUserInput() {
-    return new Promise((resolve) => {
-      this.rl.question('Enter the number of the card you wish to play: ', (answer) => {
-        resolve(answer)
-      })
-    })
-  }
-
   #validateInput(userInput, maxInput) {
     const cardIndex = parseInt(userInput, 10) - 1
     return cardIndex >= 0 && cardIndex < maxInput
-  }
-
-  close() {
-    this.rl.close()
   }
 }

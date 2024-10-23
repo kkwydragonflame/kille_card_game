@@ -7,3 +7,6 @@ Refactored playCard method and moved logic into the separate strategies to bette
 AiPlayStrategy now follows Meaningful Names, SRP, consistent formatting, DRY. Atm the algorithm is very stupid and choosing cards on random, which means it does not make a very tactical choice in cards to play. This is an area for improvement.
 
 Refactored HumanPlayStrategy to better follow SRP, descriptive naming, early returns and SOC.
+
+Had major struggles getting the readline async to work without having to have the entire calling chain set as async, as that would violate higher level code needing to know internal structure of lower level modules.
+

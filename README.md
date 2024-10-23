@@ -20,7 +20,7 @@ To install and run the game, follow these steps:
    ```bash
    git clone https://github.com/kkwydragonflame/kille-card-game.git
    ```
-2. **Install dependecies**
+2. **Install dependencies**
    ```bash
    npm install
    ```

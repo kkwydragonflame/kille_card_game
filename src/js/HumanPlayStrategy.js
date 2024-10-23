@@ -5,15 +5,16 @@ export class HumanPlayStrategy {
     this.#inputHandler = inputHandler // Need a provided User Interface component to interact with the user.
   }
 
-  async chooseCardToPlay(eligibleCards, cards) {
+  chooseCardToPlay(eligibleCards, cards) {
     this.#displayChoiceMessage(eligibleCards)
-
-    const userChoice = await this.#inputHandler.waitForUserInput(cards)
+    let isValid = false
+    let userChoice
 
     const lowestCard = this.#getLowestCard(cards)
 
-    if (!this.#isChoiceValid(userChoice, eligibleCards, lowestCard)) {
-      return this.chooseCardToPlay(eligibleCards, cards)
+    while (!isValid) {
+      userChoice = this.#inputHandler.waitForUserInput(cards)
+      isValid = this.#isChoiceValid(userChoice, eligibleCards, lowestCard)
     }
 
     return userChoice

@@ -54,6 +54,7 @@ export class CardTable {
       this.#cardsInPlay.push(playedCard)
 
       // Send the played card to the onCardPlayed callback.
+      console.log(playedCard)
       this.onCardPlayed(player, playedCard)
 
       cardsPlayed++
@@ -114,8 +115,8 @@ export class CardTable {
     return this.#players.some(player => player.strikeCount >= 3)
   }
 
-  #removePlayer(players) {
-    players.forEach(player => {
+  #removePlayer() {
+    this.#players.forEach(player => {
       const index = this.#players.indexOf(player)
       if (index > -1) {
         this.#players.splice(index, 1)
