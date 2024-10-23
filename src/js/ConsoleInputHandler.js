@@ -28,7 +28,7 @@ export class ConsoleInputHandler {
 
   #printCards(cards) {
     cards.forEach((card, index) => {
-      console.log(`${index + 1}. ${card.name}`)
+      console.log(`${index + 1}. ${card.name} value: ${card.valueOf()}`)
     })
   }
 
