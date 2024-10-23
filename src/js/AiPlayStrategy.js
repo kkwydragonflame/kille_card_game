@@ -1,16 +1,17 @@
 export class AiPlayStrategy {
   chooseCardToPlay(eligibleCards, cardsInHand) {
-    let validChoice = false
-    let AiCardChoice = null
-
-    while (!validChoice) {
-      AiCardChoice = cardsInHand[Math.floor(Math.random() * cardsInHand.length)]
-
-      if (eligibleCards.includes(AiCardChoice)) {
-        validChoice = true
-      }
+    if (eligibleCards.length === 0) {
+      return this.#playLowestCard(cardsInHand)
     }
 
-    return AiCardChoice
+    return this.#chooseRandomCard(eligibleCards)
+  }
+
+  #playLowestCard(cardsInHand) {
+    return cardsInHand.sort((a, b) => a.rank - b.rank)[0]
+  }
+
+  #chooseRandomCard(cards) {
+    return cards[Math.floor(Math.random() * cards.length)]
   }
 }
