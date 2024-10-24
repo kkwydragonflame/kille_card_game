@@ -65,7 +65,7 @@ export class CardTable {
   }
 
   #getHighestCard() {
-    return this.#cardsInPlay.sort((b, a) => b.valueOf() - a.valueOf())[0]
+    return this.#cardsInPlay.sort((a, b) => b.valueOf() - a.valueOf())[0]
   }
 
   #endTurn() {
@@ -108,7 +108,7 @@ export class CardTable {
 
   #getCurrentRoundWinner() {
     const highestCard = this.#getHighestCard()
-    return highestCard.player
+    return highestCard.player // Find who played the highest card.
   }
 
   #addCardsBackToDeck() {

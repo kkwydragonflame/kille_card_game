@@ -18,7 +18,8 @@ export class HumanPlayStrategy {
     // }
 
     // return userChoice
-    return eligibleCards[0]
+    cards.sort((a, b) => a.rank - b.rank)
+    return cards[0]
   }
 
   #displayChoiceMessage(eligibleCards) {
