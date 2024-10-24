@@ -34,15 +34,20 @@ export class HumanPlayStrategy {
   }
 
   #isChoiceValid(userChoice, eligibleCards, lowestCard) {
-    if (!eligibleCards.includes(userChoice)) {
-      if (eligibleCards.length === 0 && userChoice !== lowestCard) {
-        this.#inputHandler.displayMessage('You must play your lowest card.')
-        return false
+    if (eligibleCards.includes(userChoice)) {
+      return true
+    }
+
+    if (eligibleCards.length === 0) {
+      if (userChoice === lowestCard) {
+        return true
       } else {
-        this.#inputHandler.displayMessage('Card is not a valid choice. Please select again.')
+        this.#inputHandler.displayMessage('You must play your lowest card.')
         return false
       }
     }
-    return true
+
+    this.#inputHandler.displayMessage('Card is not a valid choice. Please select again.')
+    return false
   }
 }

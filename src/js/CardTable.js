@@ -37,7 +37,6 @@ export class CardTable {
   #getStartingPlayer() {
     if (!this.#getHighestCard()) {
       const player = this.#players[Math.floor(Math.random() * this.#players.length)]
-      console.log(`${player.name} starts the round!`)
       return player
     }
     return this.#getCurrentRoundWinner()
