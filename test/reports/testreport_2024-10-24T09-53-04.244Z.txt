@@ -1,0 +1,39 @@
+------------------------|---------|----------|---------|---------|-------------------
+File                    | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+------------------------|---------|----------|---------|---------|-------------------
+All files               |    35.6 |       25 |   22.58 |   35.48 |                   
+ AiPlayStrategy.js      |       0 |        0 |       0 |       0 | 3-15              
+ CardTable.js           |   50.84 |    21.42 |   36.36 |   51.85 | 43,73-129         
+ ConsoleInputHandler.js |       0 |        0 |       0 |       0 | 5-41              
+ HumanPlayStrategy.js   |      85 |     62.5 |     100 |   84.21 | 26,39-40          
+ KilleGame.js           |       0 |      100 |       0 |       0 | 10-40             
+ Player.js              |       0 |        0 |       0 |       0 | 8-57              
+------------------------|---------|----------|---------|---------|-------------------
+
+(node:30428) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS test/HumanPlayStrategy.test.js
+  HumanPlayStrategy
+    √ should return chosen card if it is valid (3 ms)
+    √ should prompt again if an invalid card is chosen
+    ✎ todo should prompt to play lowest card if no eligible cards
+
+PASS test/CardTable.test.js
+  CardTable
+    √ should shuffle deck when playing a round (29 ms)
+    √ should deal cards to players when playing a round (2 ms)
+    √ should play cards in order of player index (3 ms)
+    √ should call onCardPlayed for each card played (2 ms)
+    √ should randomly select a starting player if no previous round winner (2 ms)
+    √ should select previous round winner as starting player
+    √ should ensure that player index wraps around
+    ✎ todo verify that cards are dealt to players
+    ✎ todo should call onRoundOver when all players have played all but one card
+    ✎ todo should check win conditions on round over
+    ✎ todo should announce winner on game end
+
+Test Suites: 2 passed, 2 total
+Tests:       5 todo, 9 passed, 14 total
+Snapshots:   0 total
+Time:        1.475 s
+Ran all test suites.

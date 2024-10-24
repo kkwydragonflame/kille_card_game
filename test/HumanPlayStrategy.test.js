@@ -25,7 +25,7 @@ describe('HumanPlayStrategy', () => {
   ]
 
   test('should return chosen card if it is valid', () => {
-    // Simulate user choosing the first card
+    // Simulate user choosing the first valid card
     mockInputHandler.waitForUserInput.mockReturnValue(mockEligibleCards[0])
 
     const chosenCard = humanPlayStrategy.chooseCardToPlay(mockEligibleCards, mockCards)
@@ -56,6 +56,6 @@ describe('HumanPlayStrategy', () => {
 
     expect(chosenCard).toEqual(lowestCard)
 
-    // expect(mockInputHandler.displayMessage).toHaveBeenCalledWith('You have no eligible cards. You must sacrifice your lowest card.')
+    expect(mockInputHandler.displayMessage).toHaveBeenCalledWith('You have no eligible cards. You must sacrifice your lowest card.')
   })
 })

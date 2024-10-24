@@ -19,7 +19,7 @@ export class CardTable {
     this.#dealCards()
     // startingPlayer = this.#getStartingPlayer()
     this.#playCards(startingPlayer)
-    this.#endRound()
+    // this.#endRound()
   }
 
   #shuffleDeck() {
@@ -66,7 +66,7 @@ export class CardTable {
   }
 
   #getHighestCard() {
-    return this.#cardsInPlay.sort((a, b) => a.rank - b.rank)[0]
+    return this.#cardsInPlay.sort((b, a) => b.rank - a.rank)[0]
   }
 
   #endRound() {
@@ -115,7 +115,7 @@ export class CardTable {
     return this.#players.some(player => player.strikeCount >= 3)
   }
 
-  #removePlayer() {
+  #removePlayer() { // Not working as intended?
     this.#players.forEach(player => {
       const index = this.#players.indexOf(player)
       if (index > -1) {
