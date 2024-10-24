@@ -2,11 +2,13 @@ export class CardTable {
   #players
   #cardsInPlay
   #cardDeck
+  #discardPile
 
   constructor(deck, players, onCardPlayed, onRoundOver) {
     this.#players = players
     this.#cardsInPlay = []
     this.#cardDeck = deck
+    this.#discardPile = []
     this.onCardPlayed = onCardPlayed
     this.onRoundOver = onRoundOver
   }
@@ -16,7 +18,7 @@ export class CardTable {
       startingPlayer = this.#getStartingPlayer()
     }
     this.#shuffleDeck()
-    this.#dealCards()
+    this.#dealCards() // Should not deal cards if it's not the first round.
     // startingPlayer = this.#getStartingPlayer()
     this.#playTurns(startingPlayer)
     // this.#endRound()
@@ -39,7 +41,7 @@ export class CardTable {
       const player = this.#players[Math.floor(Math.random() * this.#players.length)]
       return player
     }
-    return this.#getCurrentRoundWinner()
+    return this.#getCurrentTurnWinner()
   }
 
   #playTurns(startingPlayer) {
@@ -50,7 +52,7 @@ export class CardTable {
     while (cardsPlayed < this.#players.length) {
       const player = this.#players[playerIndex]
       const playedCard = player.playCard(this.#getHighestCard())
-      this.#cardsInPlay.push(playedCard)
+      this.#cardsInPlay.push({ playedCard, player })
 
       // Send the played card to the onCardPlayed callback.
       this.onCardPlayed(player, playedCard)
@@ -65,7 +67,7 @@ export class CardTable {
   }
 
   #getHighestCard() {
-    return this.#cardsInPlay.sort((a, b) => b.valueOf() - a.valueOf())[0]
+    return this.#cardsInPlay.sort((a, b) => b.playedCard.valueOf() - a.playedCard.valueOf())[0]
   }
 
   #endTurn() {
@@ -74,27 +76,32 @@ export class CardTable {
       const playerWhoSaidYes = this.#askIfPlayerHasLowestCard()
       // If no answers yes, restart the round.
       if (!playerWhoSaidYes) {
-        this.playRound() // Need to restart with the same starting player.
+        this.playRound()
       } else {
         // As soon as one answers yes, call the #endRound() method.
-        this.#endRound()
+        this.#endRound() // Need to move this call, don't want to return here.
       }
     }
+    const turnWinner = this.#getCurrentTurnWinner()
+    // Move all cards from the cardsInPlay array to the discardPile array.
+    this.#discardPile.push(...this.#cardsInPlay)
+    this.#cardsInPlay = []
     // If false, play next round.
-    this.playRound(this.#getCurrentRoundWinner())
+    this.#playTurns(turnWinner)
   }
 
   #doesEveryoneHaveOneCardLeft() {
     return this.#players.every(player => player.cards.length === 1)
   }
 
-  #askIfPlayerHasLowestCard() {
-    this.#players.forEach(player => {
+  #askIfPlayerHasLowestCard() { // Should start with the player who last played the highest card.
+    for (const player of this.#players) {
       const hasLowestCard = player.playStrategy.askIfHasLowestCard()
       if (hasLowestCard) {
         return player
       }
-    })
+    }
+    return false // Fallback if no player has the lowest card. Should restart the round.
   }
 
   #endRound() {
@@ -103,21 +110,23 @@ export class CardTable {
     this.#removePlayer(this.#checkStrikeCount())
     this.#checkWinCondition()
     this.#addCardsBackToDeck()
-    this.playRound(this.#getCurrentRoundWinner())
+    // this.playRound(this.#getCurrentRoundWinner())
   }
 
-  #getCurrentRoundWinner() {
+  #getCurrentTurnWinner() {
     const highestCard = this.#getHighestCard()
     return highestCard.player // Find who played the highest card.
   }
 
   #addCardsBackToDeck() {
-    this.#cardsInPlay.forEach(card => this.#cardDeck.addCardToBottomOfDeck(card))
+    this.#discardPile.forEach(card => this.#cardDeck.addCardToBottomOfDeck(card.playedCard))
   }
 
-  #calculatePoints() { // Do not call this method before the last round.
+  #calculatePoints() { // Do not call this method before the last turn.
+    // Need to combine calculatePoints and checkAddToStrikeCount so that the points are calculated
+    // before the strikes are added, but also so that points are set to correct value if a player gets a strike.
     this.#players.forEach(player => {
-      player.addPoints(player.cards.forEach(card => card.valueOf()))
+      player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
       // Have a print method to call here, to print out the points for each player, and if they get a strike.
     })
   }
@@ -143,7 +152,7 @@ export class CardTable {
     return this.#players.some(player => player.strikeCount >= 3)
   }
 
-  #removePlayer() { // Not working as intended?
+  #removePlayer() { // Not working as intended. Currently removes all players.
     this.#players.forEach(player => {
       const index = this.#players.indexOf(player)
       if (index > -1) {
