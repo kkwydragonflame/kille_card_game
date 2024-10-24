@@ -14,4 +14,8 @@ export class AiPlayStrategy {
   #chooseRandomCard(cards) {
     return cards[Math.floor(Math.random() * cards.length)]
   }
+
+  askIfHasLowestCard() {
+    return Math.random() > 0.5
+  }
 }

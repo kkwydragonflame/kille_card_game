@@ -18,6 +18,8 @@ First structure
 ## Chapter 2: Meaningful Names
 The emphasis on intention-revealing names has significantly influenced my approach to naming in code. I’ve started prioritizing clear and descriptive names for classes and methods, which enhances readability and understanding. It might take a bit more time, but the added benefit of not having to look up what a certain function does makes for a much easier development process and error handling.
 
+Changed playCards to playTurns, in my mind this makes it clearer. Each player get a turn, and a round consists of each players turn. Enabled me to have separate logic for what happens at the end of each players turn, and the end of the entire round.
+
 ## Chapter 3: Functions
 The principle of keeping functions small and focused has prompted me to refactor several long methods into smaller, more manageable ones. This practice not only makes my code easier to understand but also simplifies debugging. I feel more able to keep track of what I myself am doing, and what my code is doing, since I can split it into smaller parts which gives greater focus. I have also taken to giving some time to keeping functions at the same abstraction level, as I feel this also helps me with development and bug hunting.
 

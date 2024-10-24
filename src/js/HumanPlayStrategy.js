@@ -6,19 +6,19 @@ export class HumanPlayStrategy {
   }
 
   chooseCardToPlay(eligibleCards, cards) {
-    this.#displayChoiceMessage(eligibleCards)
-    let isValid = false
-    let userChoice
+    // this.#displayChoiceMessage(eligibleCards)
+    // let isValid = false
+    // let userChoice
 
-    const lowestCard = this.#getLowestCard(cards)
+    // const lowestCard = this.#getLowestCard(cards)
 
-    while (!isValid) {
-      userChoice = this.#inputHandler.waitForUserInput(cards)
-      isValid = this.#isChoiceValid(userChoice, eligibleCards, lowestCard)
-    }
+    // while (!isValid) {
+    //   userChoice = this.#inputHandler.waitForUserInput(cards)
+    //   isValid = this.#isChoiceValid(userChoice, eligibleCards, lowestCard)
+    // }
 
-    return userChoice
-    // return eligibleCards[0]
+    // return userChoice
+    return eligibleCards[0]
   }
 
   #displayChoiceMessage(eligibleCards) {
@@ -49,5 +49,9 @@ export class HumanPlayStrategy {
 
     this.#inputHandler.displayMessage('Card is not a valid choice. Please select again.')
     return false
+  }
+
+  askIfHasLowestCard() {
+    return this.#inputHandler.askIfHasLowestCard()
   }
 }

@@ -18,7 +18,7 @@ export class CardTable {
     this.#shuffleDeck()
     this.#dealCards()
     // startingPlayer = this.#getStartingPlayer()
-    this.#playCards(startingPlayer)
+    this.#playTurns(startingPlayer)
     // this.#endRound()
   }
 
@@ -42,14 +42,14 @@ export class CardTable {
     return this.#getCurrentRoundWinner()
   }
 
-  #playCards(startingPlayer) {
+  #playTurns(startingPlayer) {
     // start with the player who played the highest card in the previous round
     let playerIndex = this.#players.indexOf(startingPlayer)
     let cardsPlayed = 0
 
     while (cardsPlayed < this.#players.length) {
       const player = this.#players[playerIndex]
-      const playedCard = player.playCard(this.#getHighestCard()) // Not correctly setting highest card on subsequent rounds.
+      const playedCard = player.playCard(this.#getHighestCard())
       this.#cardsInPlay.push(playedCard)
 
       // Send the played card to the onCardPlayed callback.
@@ -60,12 +60,41 @@ export class CardTable {
       playerIndex = (playerIndex + 1) % this.#players.length
     }
 
-    // endTurn()
+    this.#endTurn()
     // playCards should repeat until all players only have one card left.
   }
 
   #getHighestCard() {
-    return this.#cardsInPlay.sort((b, a) => b.rank - a.rank)[0]
+    return this.#cardsInPlay.sort((b, a) => b.valueOf() - a.valueOf())[0]
+  }
+
+  #endTurn() {
+    if (this.#doesEveryoneHaveOneCardLeft()) {
+      // If true, ask all players if they have the lowest card.
+      const playerWhoSaidYes = this.#askIfPlayerHasLowestCard()
+      // If no answers yes, restart the round.
+      if (!playerWhoSaidYes) {
+        this.playRound() // Need to restart with the same starting player.
+      } else {
+        // As soon as one answers yes, call the #endRound() method.
+        this.#endRound()
+      }
+    }
+    // If false, play next round.
+    this.playRound(this.#getCurrentRoundWinner())
+  }
+
+  #doesEveryoneHaveOneCardLeft() {
+    return this.#players.every(player => player.cards.length === 1)
+  }
+
+  #askIfPlayerHasLowestCard() {
+    this.#players.forEach(player => {
+      const hasLowestCard = player.playStrategy.askIfHasLowestCard()
+      if (hasLowestCard) {
+        return player
+      }
+    })
   }
 
   #endRound() {

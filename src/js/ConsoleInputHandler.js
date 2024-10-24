@@ -40,4 +40,9 @@ export class ConsoleInputHandler {
     const cardIndex = parseInt(userInput, 10) - 1
     return cardIndex >= 0 && cardIndex < maxInput
   }
+
+  askIfHasLowestCard() {
+    // return readlineSync.keyInYNStrict('Do you think you hold the lowest card?')
+    return true
+  }
 }
