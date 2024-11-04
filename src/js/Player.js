@@ -56,4 +56,8 @@ export class Player {
   get cards() {
     return [...this.#cards]
   }
+
+  get points() {
+    return this.#points
+  }
 }

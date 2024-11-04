@@ -71,6 +71,11 @@ export class CardTable {
   }
 
   #endTurn() {
+    const turnWinner = this.#getCurrentTurnWinner()
+    // Move all cards from the cardsInPlay array to the discardPile array.
+    this.#discardPile.push(...this.#cardsInPlay.playedCard)
+    this.#cardsInPlay = []
+
     if (this.#doesEveryoneHaveOneCardLeft()) {
       // If true, ask all players if they have the lowest card.
       const playerWhoSaidYes = this.#askIfPlayerHasLowestCard()
@@ -80,12 +85,9 @@ export class CardTable {
       } else {
         // As soon as one answers yes, call the #endRound() method.
         this.#endRound() // Need to move this call, don't want to return here.
+        return // Break away here, to return to the playRound method.
       }
     }
-    const turnWinner = this.#getCurrentTurnWinner()
-    // Move all cards from the cardsInPlay array to the discardPile array.
-    this.#discardPile.push(...this.#cardsInPlay)
-    this.#cardsInPlay = []
     // If false, play next round.
     this.#playTurns(turnWinner)
   }
@@ -118,8 +120,11 @@ export class CardTable {
     return highestCard.player // Find who played the highest card.
   }
 
-  #addCardsBackToDeck() {
-    this.#discardPile.forEach(card => this.#cardDeck.addCardToBottomOfDeck(card.playedCard))
+  #addCardsBackToDeck() { // Don't use forEach, use a for loop instead.
+    for (const card of this.#discardPile) {
+      this.#cardDeck.addCardToBottomOfDeck(card)
+    }
+    // this.#discardPile.forEach(card => this.#cardDeck.addCardToBottomOfDeck(card))
   }
 
   #calculatePoints() { // Do not call this method before the last turn.
@@ -149,11 +154,11 @@ export class CardTable {
   }
 
   #checkStrikeCount() {
-    return this.#players.some(player => player.strikeCount >= 3)
+    return this.#players.map(player => player.strikeCount >= 3)
   }
 
-  #removePlayer() { // Not working as intended. Currently removes all players.
-    this.#players.forEach(player => {
+  #removePlayer(players) { // Not working as intended. Currently removes all players.
+    players.forEach(player => {
       const index = this.#players.indexOf(player)
       if (index > -1) {
         this.#players.splice(index, 1)
