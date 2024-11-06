@@ -14,7 +14,7 @@ export class KilleGame {
   #setupGame() {
     this.players = this.#generatePlayers()
     this.deck = DeckGenerator.generateDeck('kille')
-    this.cardTable = new CardTable(this.deck, this.players, this.onCardPlayed, this.onRoundOver, this.onGameEnd)
+    this.cardTable = new CardTable(this.deck, this.players, this.onCardPlayed, this.onRoundOver, this.onGameEnd, this.displayMessage)
   }
 
   #generatePlayers() {

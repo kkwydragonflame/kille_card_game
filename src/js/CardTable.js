@@ -4,7 +4,7 @@ export class CardTable {
   #cardDeck
   #discardPile
 
-  constructor(deck, players, onCardPlayed, onRoundOver, onGameEnd) {
+  constructor(deck, players, onCardPlayed, onRoundOver, onGameEnd, displayMessage) {
     this.#players = players
     this.#cardsInPlay = []
     this.#cardDeck = deck
@@ -12,6 +12,7 @@ export class CardTable {
     this.onCardPlayed = onCardPlayed
     this.onRoundOver = onRoundOver
     this.onGameEnd = onGameEnd
+    this.displayMessage = displayMessage
   }
 
   playRound(startingPlayer) {
@@ -101,7 +102,7 @@ export class CardTable {
     let playerIndex = this.#players.indexOf(turnWinner)
     let playersAsked = 0
 
-    while (playersAsked < this.#players.length) { // Not gonna work, need to loop around.
+    while (playersAsked < this.#players.length) {
       const player = this.#players[playerIndex]
       const hasLowestCard = player.playStrategy.askIfHasLowestCard()
       if (hasLowestCard) {
@@ -146,8 +147,6 @@ export class CardTable {
   }
 
   #calculatePoints() { // Do not call this method before the last turn.
-    // Need to combine calculatePoints and checkAddToStrikeCount so that the points are calculated
-    // before the strikes are added, but also so that points are set to correct value if a player gets a strike.
     this.#players.forEach(player => {
       player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
       // Have a print method to call here, to print out the points for each player, and if they get a strike.
@@ -171,16 +170,17 @@ export class CardTable {
     })
   }
 
-  #checkStrikeCount() { // Returns an array of booleans, where true means that the player has 3 strikes.
-    return this.#players.map(player => player.strikeCount >= 3)
+  #checkStrikeCount() { // Should now return an array of players with 3 strikes.
+    return this.#players.filter(player => player.strikeCount >= 3)
   }
 
-  #removePlayer(players) { // Not working as intended. Currently removes all players.
+  #removePlayer(players) { // Should now only remove players with 3 strikes.
     players.forEach(player => {
       const index = this.#players.indexOf(player)
       if (index > -1) {
         this.#players.splice(index, 1)
-        // Have a print method to call here, to print out the player that has been removed from the game
+        this.displayMessage(`${player.name} has received 3 strikes and have been removed from the game.`)
+        // Don't want to bind the message to a console implementation.
       }
     })
   }
