@@ -22,8 +22,8 @@ export class CardTable {
     this.#shuffleDeck()
     this.#dealCards() // Should not deal cards if it's not the first round.
     // startingPlayer = this.#getStartingPlayer()
-    this.#playTurns(startingPlayer)
-    // this.#endRound()
+    const playerWhoSaidYes = this.#playTurns(startingPlayer)
+    this.#endRound(playerWhoSaidYes)
   }
 
   #shuffleDeck() {
@@ -76,18 +76,20 @@ export class CardTable {
     const turnWinner = this.#getCurrentTurnWinner()
     // Move all cards from the cardsInPlay array to the discardPile array.
     this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
-    this.#cardsInPlay = []
+    this.#cardsInPlay = [] // Can refactor this and removing the cards from the players hands to a separate method.
 
     if (this.#doesEveryoneHaveOneCardLeft()) {
       // If true, ask all players if they have the lowest card.
       const playerWhoSaidYes = this.#askIfPlayerHasLowestCard(turnWinner)
       // If no answers yes, restart the round.
       if (!playerWhoSaidYes) {
-        this.playRound()
+        this.playRound() // Will this produce an infinite loop? Should it be a return instead?
       } else {
         // As soon as one answers yes, call the #endRound() method.
-        this.#endRound() // Need to move this call, don't want to return here.
-        return // Break away here, to return to the playRound method.
+        // Reveal all cards in the players hands.
+
+        // this.#endRound(playerWhoSaidYes) // Need to move this call, don't want to return here.
+        return playerWhoSaidYes// Break away here, to return to the playRound method.
       }
     }
     // If false, play next round.
@@ -111,17 +113,13 @@ export class CardTable {
       playersAsked++
       playerIndex = (playerIndex + 1) % this.#players.length
     }
-    // for (const player of this.#players) {
-    //   const hasLowestCard = player.playStrategy.askIfHasLowestCard()
-    //   if (hasLowestCard) {
-    //     return player
-    //   }
-    // }
     return false // Fallback if no player has the lowest card. Should restart the round.
   }
 
-  #endRound() {
-    this.#calculatePoints()
+  #endRound(playerWhoSaidYes) {
+    this.#calculatePoints(playerWhoSaidYes)
+    const lowestCardHolder = this.#findWhoHoldsTheLowestCard()
+    this.#addPenaltyPoints(lowestCardHolder, playerWhoSaidYes)
     this.#checkAddToStrikeCount()
     this.#removePlayer(this.#checkStrikeCount())
     this.#checkWinCondition()
@@ -137,20 +135,38 @@ export class CardTable {
   #addCardsBackToDeck() {
     // At this point, all players should only have one card left.
     for (const player of this.#players) {
-      this.#discardPile.push(player.cards.pop())
+      this.#discardPile.push(player.cards.pop()) // Use the removeCardFromHand method instead.
     }
 
-    for (let i = 0; i < this.#discardPile.length; i++) {
+    for (let i = 0; i < this.#discardPile.length; i++) { // Why does this leave 10 cards in the discard pile?
       this.#cardDeck.addCardToBottomOfDeck(this.#discardPile.pop()) // Remove the cards from the discard pile and add them back to the deck.
     }
     // this.#discardPile.forEach(card => this.#cardDeck.addCardToBottomOfDeck(card))
   }
 
-  #calculatePoints() { // Do not call this method before the last turn.
+  #calculatePoints(playerWhoSaidYes) { // Do not call this method before the last turn.
     this.#players.forEach(player => {
       player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
       // Have a print method to call here, to print out the points for each player, and if they get a strike.
     })
+  }
+
+  #addPenaltyPoints(lowestCardHolder, playerWhoSaidYes) {
+    if (lowestCardHolder !== playerWhoSaidYes) {
+      lowestCardHolder.addPoints(5)
+    }
+  }
+
+  #findWhoHoldsTheLowestCard() {
+    let lowestCardHolder = this.#players[0]
+    for (const player of this.#players) {
+      for (const card of player.cards) {
+        if (card.valueOf() < lowestCardHolder.cards[0].valueOf()) {
+          lowestCardHolder = player
+        }
+      }
+    }
+    return lowestCardHolder
   }
 
   #checkAddToStrikeCount() {
@@ -179,7 +195,7 @@ export class CardTable {
       const index = this.#players.indexOf(player)
       if (index > -1) {
         this.#players.splice(index, 1)
-        this.displayMessage(`${player.name} has received 3 strikes and have been removed from the game.`)
+        this.displayMessage(`${player.name} has received 3 strikes and has been eliminated.`)
         // Don't want to bind the message to a console implementation.
       }
     })
@@ -187,11 +203,10 @@ export class CardTable {
 
   #checkWinCondition() {
     if (this.#players.length === 1) {
-      // Have a print method to call here, to print out the winner of the game.
       this.onGameEnd({ winner: this.#players[0].name })
+      // Have a game over method call here?
     } else {
-      // reset round and go next round
+      // how to check if all players but one received 3 strikes this round?
     }
   }
 }
-// Only thing left is to have the 'Do-You-Have-The-Lowest-Card' check.
