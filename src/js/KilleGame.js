@@ -14,7 +14,7 @@ export class KilleGame {
   #setupGame() {
     this.players = this.#generatePlayers()
     this.deck = DeckGenerator.generateDeck('kille')
-    this.cardTable = new CardTable(this.deck, this.players, this.onCardPlayed, this.onRoundOver)
+    this.cardTable = new CardTable(this.deck, this.players, this.onCardPlayed, this.onRoundOver, this.onGameEnd)
   }
 
   #generatePlayers() {
@@ -38,5 +38,9 @@ export class KilleGame {
 
   onRoundOver(player) {
     console.log(`Round over! ${player.name} won and gets to start next round!`)
+  }
+
+  onGameEnd(player) {
+    console.log(`Game finished! The winner is... ${player}!`)
   }
 }

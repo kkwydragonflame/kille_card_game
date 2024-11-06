@@ -4,13 +4,14 @@ export class CardTable {
   #cardDeck
   #discardPile
 
-  constructor(deck, players, onCardPlayed, onRoundOver) {
+  constructor(deck, players, onCardPlayed, onRoundOver, onGameEnd) {
     this.#players = players
     this.#cardsInPlay = []
     this.#cardDeck = deck
     this.#discardPile = []
     this.onCardPlayed = onCardPlayed
     this.onRoundOver = onRoundOver
+    this.onGameEnd = onGameEnd
   }
 
   playRound(startingPlayer) {
@@ -73,12 +74,12 @@ export class CardTable {
   #endTurn() {
     const turnWinner = this.#getCurrentTurnWinner()
     // Move all cards from the cardsInPlay array to the discardPile array.
-    this.#discardPile.push(...this.#cardsInPlay.playedCard)
+    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
     this.#cardsInPlay = []
 
     if (this.#doesEveryoneHaveOneCardLeft()) {
       // If true, ask all players if they have the lowest card.
-      const playerWhoSaidYes = this.#askIfPlayerHasLowestCard()
+      const playerWhoSaidYes = this.#askIfPlayerHasLowestCard(turnWinner)
       // If no answers yes, restart the round.
       if (!playerWhoSaidYes) {
         this.playRound()
@@ -96,13 +97,25 @@ export class CardTable {
     return this.#players.every(player => player.cards.length === 1)
   }
 
-  #askIfPlayerHasLowestCard() { // Should start with the player who last played the highest card.
-    for (const player of this.#players) {
+  #askIfPlayerHasLowestCard(turnWinner) { // Should start with the player who last played the highest card.
+    let playerIndex = this.#players.indexOf(turnWinner)
+    let playersAsked = 0
+
+    while (playersAsked < this.#players.length) { // Not gonna work, need to loop around.
+      const player = this.#players[playerIndex]
       const hasLowestCard = player.playStrategy.askIfHasLowestCard()
       if (hasLowestCard) {
         return player
       }
+      playersAsked++
+      playerIndex = (playerIndex + 1) % this.#players.length
     }
+    // for (const player of this.#players) {
+    //   const hasLowestCard = player.playStrategy.askIfHasLowestCard()
+    //   if (hasLowestCard) {
+    //     return player
+    //   }
+    // }
     return false // Fallback if no player has the lowest card. Should restart the round.
   }
 
@@ -120,9 +133,14 @@ export class CardTable {
     return highestCard.player // Find who played the highest card.
   }
 
-  #addCardsBackToDeck() { // Don't use forEach, use a for loop instead.
-    for (const card of this.#discardPile) {
-      this.#cardDeck.addCardToBottomOfDeck(card)
+  #addCardsBackToDeck() {
+    // At this point, all players should only have one card left.
+    for (const player of this.#players) {
+      this.#discardPile.push(player.cards.pop())
+    }
+
+    for (let i = 0; i < this.#discardPile.length; i++) {
+      this.#cardDeck.addCardToBottomOfDeck(this.#discardPile.pop()) // Remove the cards from the discard pile and add them back to the deck.
     }
     // this.#discardPile.forEach(card => this.#cardDeck.addCardToBottomOfDeck(card))
   }
@@ -153,7 +171,7 @@ export class CardTable {
     })
   }
 
-  #checkStrikeCount() {
+  #checkStrikeCount() { // Returns an array of booleans, where true means that the player has 3 strikes.
     return this.#players.map(player => player.strikeCount >= 3)
   }
 
@@ -170,7 +188,7 @@ export class CardTable {
   #checkWinCondition() {
     if (this.#players.length === 1) {
       // Have a print method to call here, to print out the winner of the game.
-      // this.onGameEnd({ winner: this.#players[0].name })
+      this.onGameEnd({ winner: this.#players[0].name })
     } else {
       // reset round and go next round
     }
