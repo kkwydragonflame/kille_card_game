@@ -41,6 +41,6 @@ export class KilleGame {
   }
 
   onGameEnd(player) {
-    console.log(`Game finished! The winner is... ${player}!`)
+    console.log(`Game finished! The winner is... ${player.name}!`)
   }
 }

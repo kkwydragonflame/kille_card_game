@@ -60,4 +60,8 @@ export class Player {
   get points() {
     return this.#points
   }
+
+  get strikeCount() {
+    return this.#strikeCount
+  }
 }

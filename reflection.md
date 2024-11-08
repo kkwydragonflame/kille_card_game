@@ -11,6 +11,11 @@ Refactored HumanPlayStrategy to better follow SRP, descriptive naming, early ret
 Had major struggles getting the readline async to work without having to have the entire calling chain set as async, as that would violate higher level code needing to know internal structure of lower level modules.
 To keep from having the entire calling chain marked async. Had to switch package in the end, to readline-sync.
 
+Things missing;
+
+* Logic for playing another game without having to restart.
+* Logic for win scenario 2.
+
 
 
 First structure

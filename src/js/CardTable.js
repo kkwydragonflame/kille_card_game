@@ -91,9 +91,10 @@ export class CardTable {
         // this.#endRound(playerWhoSaidYes) // Need to move this call, don't want to return here.
         return playerWhoSaidYes// Break away here, to return to the playRound method.
       }
+    } else {
+      // If false, play next round.
+      this.#playTurns(turnWinner)
     }
-    // If false, play next round.
-    this.#playTurns(turnWinner)
   }
 
   #doesEveryoneHaveOneCardLeft() {
@@ -107,7 +108,15 @@ export class CardTable {
     while (playersAsked < this.#players.length) {
       const player = this.#players[playerIndex]
       const hasLowestCard = player.playStrategy.askIfHasLowestCard()
+      this.displayMessage(`${player.name} claim they ${hasLowestCard ? 'hold' : 'do not hold'} the lowest card.`)
       if (hasLowestCard) {
+        // Have each player reveal their cards, by playing them.
+        this.displayMessage('Revealing all cards in the players hands.')
+        for (const player of this.#players) {
+          const playedCard = player.playCard(this.#getHighestCard())
+          this.#cardsInPlay.push({ playedCard, player })
+          this.displayMessage(`${player.name} holds a ${playedCard.toString()} (value: ${playedCard.valueOf()})`)
+        }
         return player
       }
       playersAsked++
@@ -134,20 +143,22 @@ export class CardTable {
 
   #addCardsBackToDeck() {
     // At this point, all players should only have one card left.
-    for (const player of this.#players) {
-      this.#discardPile.push(player.cards.pop()) // Use the removeCardFromHand method instead.
-    }
+    // for (const player of this.#players) {
+    //   this.#discardPile.push(player.cards.pop()) // Use the removeCardFromHand method instead.
+    // } // Not needed, as the cards are already in the discard pile.
 
-    for (let i = 0; i < this.#discardPile.length; i++) { // Why does this leave 10 cards in the discard pile?
-      this.#cardDeck.addCardToBottomOfDeck(this.#discardPile.pop()) // Remove the cards from the discard pile and add them back to the deck.
+    // Have to add the cards from the cardsInPlay array to the discard pile.
+    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
+    this.#cardsInPlay = []
+
+    while (this.#discardPile.length) {
+      this.#cardDeck.addCardToBottomOfDeck(this.#discardPile.pop())
     }
-    // this.#discardPile.forEach(card => this.#cardDeck.addCardToBottomOfDeck(card))
   }
 
-  #calculatePoints(playerWhoSaidYes) { // Do not call this method before the last turn.
+  #calculatePoints() {
     this.#players.forEach(player => {
       player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
-      // Have a print method to call here, to print out the points for each player, and if they get a strike.
     })
   }
 
@@ -157,7 +168,7 @@ export class CardTable {
     }
   }
 
-  #findWhoHoldsTheLowestCard() {
+  #findWhoHoldsTheLowestCard() { // Not working as intended.
     let lowestCardHolder = this.#players[0]
     for (const player of this.#players) {
       for (const card of player.cards) {
@@ -181,16 +192,16 @@ export class CardTable {
     this.#players.forEach(player => {
       if (player.points >= 21) {
         player.addStrike()
-        player.points = highestSum
+        player.points = highestSum // Does this change the points for the player?
       }
     })
   }
 
-  #checkStrikeCount() { // Should now return an array of players with 3 strikes.
+  #checkStrikeCount() {
     return this.#players.filter(player => player.strikeCount >= 3)
   }
 
-  #removePlayer(players) { // Should now only remove players with 3 strikes.
+  #removePlayer(players) {
     players.forEach(player => {
       const index = this.#players.indexOf(player)
       if (index > -1) {
@@ -203,8 +214,7 @@ export class CardTable {
 
   #checkWinCondition() {
     if (this.#players.length === 1) {
-      this.onGameEnd({ winner: this.#players[0].name })
-      // Have a game over method call here?
+      this.onGameEnd(this.#players[0])
     } else {
       // how to check if all players but one received 3 strikes this round?
     }
