@@ -20,8 +20,7 @@ export class CardTable {
       startingPlayer = this.#getStartingPlayer()
     }
     this.#shuffleDeck()
-    this.#dealCards() // Should not deal cards if it's not the first round.
-    // startingPlayer = this.#getStartingPlayer()
+    this.#dealCards()
     const playerWhoSaidYes = this.#playTurns(startingPlayer)
     this.#endRound(playerWhoSaidYes)
   }
@@ -65,7 +64,6 @@ export class CardTable {
     }
 
     this.#endTurn()
-    // playCards should repeat until all players only have one card left.
   }
 
   #getHighestCard() {
@@ -74,9 +72,7 @@ export class CardTable {
 
   #endTurn() {
     const turnWinner = this.#getCurrentTurnWinner()
-    // Move all cards from the cardsInPlay array to the discardPile array.
-    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
-    this.#cardsInPlay = [] // Can refactor this and removing the cards from the players hands to a separate method.
+    this.#discardCards()
 
     if (this.#doesEveryoneHaveOneCardLeft()) {
       // If true, ask all players if they have the lowest card.
@@ -126,7 +122,7 @@ export class CardTable {
   }
 
   #endRound(playerWhoSaidYes) {
-    this.#calculatePoints(playerWhoSaidYes)
+    this.#calculatePoints()
     const lowestCardHolder = this.#findWhoHoldsTheLowestCard()
     this.#addPenaltyPoints(lowestCardHolder, playerWhoSaidYes)
     this.#checkAddToStrikeCount()
@@ -154,6 +150,11 @@ export class CardTable {
     while (this.#discardPile.length) {
       this.#cardDeck.addCardToBottomOfDeck(this.#discardPile.pop())
     }
+  }
+
+  #discardCards() {
+    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
+    this.#cardsInPlay = []
   }
 
   #calculatePoints() {
