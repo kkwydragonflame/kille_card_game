@@ -22,14 +22,14 @@ export class Player {
 
     const card = this.playStrategy.chooseCardToPlay(eligibleCards, this.cards)
 
-    return this.#removeCardFromHand(card)
+    return this.removeCardFromHand(card)
   }
 
   #getEligibleCards(highestCard) {
     return !highestCard ? this.#cards : this.#cards.filter(card => card.valueOf() >= highestCard.valueOf())
   }
 
-  #removeCardFromHand(card) {
+  removeCardFromHand(card) {
     const index = this.#cards.indexOf(card)
     if (index > -1) {
       this.#cards.splice(index, 1)

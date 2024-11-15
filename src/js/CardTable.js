@@ -53,7 +53,7 @@ export class CardTable {
 
   #playTurns() {
     // start with the player who played the highest card in the previous round
-    let playerIndex = this.#players.indexOf(this.#startingPlayer) ?? 0 // Set as 0 if no starting player.
+    let playerIndex = this.#startingPlayer ? this.#players.indexOf(this.#startingPlayer) : 0
     let cardsPlayed = 0
 
     while (cardsPlayed < this.#players.length) {
@@ -71,6 +71,7 @@ export class CardTable {
 
     // set turnWinner to the player who played the highest card this turn.
     this.#setTurnWinner()
+    this.#discardCardsFromTable()
   }
 
   #getHighestCard() {
@@ -82,17 +83,23 @@ export class CardTable {
     this.#startingPlayer = highestCard.player // Find who played the highest card.
   }
 
+  #discardCardsFromTable() {
+    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
+    this.#cardsInPlay = []
+  }
+
   #askWhoHoldsLowestCard() { // Should start with the player who last played the highest card.
     const lowestCardHolder = this.#findWhoHoldsTheLowestCard()
-    const lowCardClaimer = null
+    let lowCardClaimer = null
     let playerIndex = this.#players.indexOf(this.#startingPlayer)
     let playersAsked = 0
 
     while (playersAsked < this.#players.length) {
       const player = this.#players[playerIndex]
       const hasLowestCard = player.playStrategy.askIfHasLowestCard()
-      this.displayMessage(`${player.name} claim they ${hasLowestCard ? 'hold' : 'do not hold'} the lowest card.`)
+      this.displayMessage(`${player.name} claim to ${hasLowestCard ? 'hold' : 'not hold'} the lowest card.`)
       if (hasLowestCard) {
+        lowCardClaimer = player
         // Have each player reveal their cards, by playing them.
         // this.displayMessage('Revealing all cards in the players hands.')
         // for (const player of this.#players) {
@@ -102,6 +109,9 @@ export class CardTable {
         // }
         // return player
         this.#revealPlayerCards()
+        this.#discardPlayerCards()
+        // end the loop here, to continue with next if statement.
+        break
       }
       playersAsked++
       playerIndex = (playerIndex + 1) % this.#players.length
@@ -111,7 +121,7 @@ export class CardTable {
       this.#addPenaltyPoints(lowCardClaimer)
     }
     // need to return true or false here, to determine if the round should be restarted.
-    if (!hasLowestCard) {
+    if (!lowCardClaimer) {
       return false
     } else {
       return true
@@ -133,8 +143,14 @@ export class CardTable {
   #revealPlayerCards() {
     for (const player of this.#players) {
       // Reveal what cards the players have.
-      // player.cards.forEach(card => this.displayMessage(`${player.name} holds a ${card.toString()} (value: ${card.valueOf()})`))
+      player.cards.forEach(card => this.displayMessage(`${player.name} hold a ${card.toString()} (value: ${card.valueOf()})`))
       // discard the cards after they have been revealed.
+    }
+  }
+
+  #discardPlayerCards() {
+    for (const player of this.#players) {
+      this.#discardPile.push(player.removeCardFromHand(player.cards[0]))
     }
   }
 
@@ -143,6 +159,7 @@ export class CardTable {
   }
 
   #calculatePoints() {
+    // Add points to each player, except if lowCardClaimer was correct.
     this.#players.forEach(player => {
       player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
     })
@@ -160,7 +177,7 @@ export class CardTable {
     this.#players.forEach(player => {
       if (player.points >= 21) {
         player.addStrike()
-        player.points = highestSum // Does this change the points for the player?
+        player.points = highestSum
       }
     })
   }
@@ -216,10 +233,5 @@ export class CardTable {
     this.#addCardsBackToDeck()
     // this.playRound(this.#getCurrentRoundWinner())
     // from here I want to return to the playRound method. But how?
-  }
-
-  #discardCards() {
-    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
-    this.#cardsInPlay = []
   }
 }
