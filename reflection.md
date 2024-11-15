@@ -53,3 +53,17 @@ Scalability: I've tried to make it so that the core logic of the game can easily
 I've adopted the Strategy Pattern for the card chosing logic for the different players.
 
 ## Chapter 11: Lessons
+
+
+## Final thoughts
+My initial design was intended to be a webapp with a fancy visual UI where you could observe each player and whichever card they played. Unfortunately circumstances made me pressed for time so about halfway through I had to scrap that idea, and refactored?!reworked?! the project into a simpler console app. I still wished to keep an architechture that would enable a simple switch to another UI later on, making the project versatile and flexible.
+Some major things I've learned during this project is to not get too fixated on one implementetaion of code (inte bli för fäst vid vad man först skrivit, utan vara villiga att scrappa idéer och börja om). Initially I was too focused on simply making the code work, and planning on refactoring to adhere to Clean Code after. But I quickly coded myself into a corner, so to speak. I made the code too complicated, forcing myself to keep track of too many things at once - causing me to loose track of what exactly I was doing at times, stressing me out even more because I could not see the trees for the forest.
+A bit of time away provided clarity, and I started refactoring my-still-not-working-code according to Clean Code, and found I got a much better view of what was happening in the code, where I wanted to go - since I suddenly had much fewer things to keep track of at once.
+
+I found it quite tricky to adhere to all of Clean Codes rules simultaneously. For example, keeping all methods small. Some I have chosen to keep a bit larger, simply for cohesiveness - some logic was easier to keep track of if I kept it together in one place.
+
+I refactored my starting file, so that instead of providing callbacks I provided methods CardTable could call for different scenarios??? <-- Remove if not used.
+
+Improvement needed, like adding pauses in the game in appropriate places for a more natural feeling flow of the game.
+
+CardTable is quite big. Should probably be split into several classes, one holding the table where cards are played and one holding the game flow logic. This was just simpler.

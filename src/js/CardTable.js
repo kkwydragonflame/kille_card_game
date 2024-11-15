@@ -3,6 +3,7 @@ export class CardTable {
   #cardsInPlay
   #cardDeck
   #discardPile
+  #startingPlayer
 
   constructor(deck, players, onCardPlayed, onRoundOver, onGameEnd, displayMessage) {
     this.#players = players
@@ -15,14 +16,23 @@ export class CardTable {
     this.displayMessage = displayMessage
   }
 
-  playRound(startingPlayer) {
-    if (!startingPlayer) {
-      startingPlayer = this.#getStartingPlayer()
-    }
+  playRound() {
     this.#shuffleDeck()
     this.#dealCards()
-    const playerWhoSaidYes = this.#playTurns(startingPlayer)
-    this.#endRound(playerWhoSaidYes)
+    while (!this.#doesEveryoneHaveOneCardLeft()) {
+      this.#playTurns()
+    }
+    // After loop do the check for the lowest card.
+    if (!this.#askWhoHoldsLowestCard()) {
+      // If no one has the lowest card, restart the round.
+      this.playRound()
+    }
+    this.#calculatePoints()
+    this.#checkAddToStrikeCount()
+    this.#removePlayer(this.#checkStrikeCount())
+    this.#checkWinCondition()
+    this.#addCardsBackToDeck()
+    this.#endRound()
   }
 
   #shuffleDeck() {
@@ -37,17 +47,13 @@ export class CardTable {
     }
   }
 
-  #getStartingPlayer() {
-    if (!this.#getHighestCard()) {
-      const player = this.#players[Math.floor(Math.random() * this.#players.length)]
-      return player
-    }
-    return this.#getCurrentTurnWinner()
+  #doesEveryoneHaveOneCardLeft() {
+    return this.#players.every(player => player.cards.length === 1)
   }
 
-  #playTurns(startingPlayer) {
+  #playTurns() {
     // start with the player who played the highest card in the previous round
-    let playerIndex = this.#players.indexOf(startingPlayer)
+    let playerIndex = this.#players.indexOf(this.#startingPlayer) ?? 0 // Set as 0 if no starting player.
     let cardsPlayed = 0
 
     while (cardsPlayed < this.#players.length) {
@@ -63,42 +69,23 @@ export class CardTable {
       playerIndex = (playerIndex + 1) % this.#players.length
     }
 
-    this.#endTurn()
+    // set turnWinner to the player who played the highest card this turn.
+    this.#setTurnWinner()
   }
 
   #getHighestCard() {
     return this.#cardsInPlay.sort((a, b) => b.playedCard.valueOf() - a.playedCard.valueOf())[0]
   }
 
-  #endTurn() {
-    const turnWinner = this.#getCurrentTurnWinner()
-    this.#discardCards()
-
-    if (this.#doesEveryoneHaveOneCardLeft()) {
-      // If true, ask all players if they have the lowest card.
-      const playerWhoSaidYes = this.#askIfPlayerHasLowestCard(turnWinner)
-      // If no answers yes, restart the round.
-      if (!playerWhoSaidYes) {
-        this.playRound() // Will this produce an infinite loop? Should it be a return instead?
-      } else {
-        // As soon as one answers yes, call the #endRound() method.
-        // Reveal all cards in the players hands.
-
-        // this.#endRound(playerWhoSaidYes) // Need to move this call, don't want to return here.
-        return playerWhoSaidYes// Break away here, to return to the playRound method.
-      }
-    } else {
-      // If false, play next round.
-      this.#playTurns(turnWinner)
-    }
+  #setTurnWinner() {
+    const highestCard = this.#getHighestCard()
+    this.#startingPlayer = highestCard.player // Find who played the highest card.
   }
 
-  #doesEveryoneHaveOneCardLeft() {
-    return this.#players.every(player => player.cards.length === 1)
-  }
-
-  #askIfPlayerHasLowestCard(turnWinner) { // Should start with the player who last played the highest card.
-    let playerIndex = this.#players.indexOf(turnWinner)
+  #askWhoHoldsLowestCard() { // Should start with the player who last played the highest card.
+    const lowestCardHolder = this.#findWhoHoldsTheLowestCard()
+    const lowCardClaimer = null
+    let playerIndex = this.#players.indexOf(this.#startingPlayer)
     let playersAsked = 0
 
     while (playersAsked < this.#players.length) {
@@ -107,65 +94,27 @@ export class CardTable {
       this.displayMessage(`${player.name} claim they ${hasLowestCard ? 'hold' : 'do not hold'} the lowest card.`)
       if (hasLowestCard) {
         // Have each player reveal their cards, by playing them.
-        this.displayMessage('Revealing all cards in the players hands.')
-        for (const player of this.#players) {
-          const playedCard = player.playCard(this.#getHighestCard())
-          this.#cardsInPlay.push({ playedCard, player })
-          this.displayMessage(`${player.name} holds a ${playedCard.toString()} (value: ${playedCard.valueOf()})`)
-        }
-        return player
+        // this.displayMessage('Revealing all cards in the players hands.')
+        // for (const player of this.#players) {
+        //   const playedCard = player.playCard(this.#getHighestCard())
+        //   this.#cardsInPlay.push({ playedCard, player })
+        //   this.displayMessage(`${player.name} holds a ${playedCard.toString()} (value: ${playedCard.valueOf()})`)
+        // }
+        // return player
+        this.#revealPlayerCards()
       }
       playersAsked++
       playerIndex = (playerIndex + 1) % this.#players.length
     }
-    return false // Fallback if no player has the lowest card. Should restart the round.
-  }
-
-  #endRound(playerWhoSaidYes) {
-    this.#calculatePoints()
-    const lowestCardHolder = this.#findWhoHoldsTheLowestCard()
-    this.#addPenaltyPoints(lowestCardHolder, playerWhoSaidYes)
-    this.#checkAddToStrikeCount()
-    this.#removePlayer(this.#checkStrikeCount())
-    this.#checkWinCondition()
-    this.#addCardsBackToDeck()
-    // this.playRound(this.#getCurrentRoundWinner())
-  }
-
-  #getCurrentTurnWinner() {
-    const highestCard = this.#getHighestCard()
-    return highestCard.player // Find who played the highest card.
-  }
-
-  #addCardsBackToDeck() {
-    // At this point, all players should only have one card left.
-    // for (const player of this.#players) {
-    //   this.#discardPile.push(player.cards.pop()) // Use the removeCardFromHand method instead.
-    // } // Not needed, as the cards are already in the discard pile.
-
-    // Have to add the cards from the cardsInPlay array to the discard pile.
-    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
-    this.#cardsInPlay = []
-
-    while (this.#discardPile.length) {
-      this.#cardDeck.addCardToBottomOfDeck(this.#discardPile.pop())
+    // return false // Fallback if no player has the lowest card. Should restart the round.
+    if (lowestCardHolder !== lowCardClaimer) {
+      this.#addPenaltyPoints(lowCardClaimer)
     }
-  }
-
-  #discardCards() {
-    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
-    this.#cardsInPlay = []
-  }
-
-  #calculatePoints() {
-    this.#players.forEach(player => {
-      player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
-    })
-  }
-
-  #addPenaltyPoints(lowestCardHolder, playerWhoSaidYes) {
-    if (lowestCardHolder !== playerWhoSaidYes) {
-      lowestCardHolder.addPoints(5)
+    // need to return true or false here, to determine if the round should be restarted.
+    if (!hasLowestCard) {
+      return false
+    } else {
+      return true
     }
   }
 
@@ -179,6 +128,24 @@ export class CardTable {
       }
     }
     return lowestCardHolder
+  }
+
+  #revealPlayerCards() {
+    for (const player of this.#players) {
+      // Reveal what cards the players have.
+      // player.cards.forEach(card => this.displayMessage(`${player.name} holds a ${card.toString()} (value: ${card.valueOf()})`))
+      // discard the cards after they have been revealed.
+    }
+  }
+
+  #addPenaltyPoints(lowCardClaimer) {
+    lowCardClaimer.addPoints(5)
+  }
+
+  #calculatePoints() {
+    this.#players.forEach(player => {
+      player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
+    })
   }
 
   #checkAddToStrikeCount() {
@@ -215,9 +182,44 @@ export class CardTable {
 
   #checkWinCondition() {
     if (this.#players.length === 1) {
+      // Last Man Standing win scenario.
       this.onGameEnd(this.#players[0])
     } else {
+      // Here's where to implement the second win scenario.
       // how to check if all players but one received 3 strikes this round?
     }
+    // should I return true or false here to have playRound method call gameEnd? Or should I call gameEnd here?
+  }
+
+  #addCardsBackToDeck() {
+    // At this point, all players should only have one card left.
+    // for (const player of this.#players) {
+    //   this.#discardPile.push(player.cards.pop()) // Use the removeCardFromHand method instead.
+    // } // Not needed, as the cards are already in the discard pile.
+
+    // Have to add the cards from the cardsInPlay array to the discard pile.
+    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
+    this.#cardsInPlay = []
+
+    while (this.#discardPile.length) {
+      this.#cardDeck.addCardToBottomOfDeck(this.#discardPile.pop())
+    }
+  }
+
+  #endRound(playerWhoSaidYes) {
+    this.#calculatePoints()
+    const lowestCardHolder = this.#findWhoHoldsTheLowestCard()
+    this.#addPenaltyPoints(lowestCardHolder, playerWhoSaidYes)
+    this.#checkAddToStrikeCount()
+    this.#removePlayer(this.#checkStrikeCount())
+    this.#checkWinCondition()
+    this.#addCardsBackToDeck()
+    // this.playRound(this.#getCurrentRoundWinner())
+    // from here I want to return to the playRound method. But how?
+  }
+
+  #discardCards() {
+    this.#discardPile.push(...this.#cardsInPlay.map(card => card.playedCard))
+    this.#cardsInPlay = []
   }
 }

@@ -49,6 +49,14 @@ export class Player {
     this.#strikeCount++
   }
 
+  set points(points) {
+    if (typeof points !== 'number' || Number.isNaN(points) || points < 0 || !Number.isInteger(points)) {
+      throw new Error('Points must be a positive integer.')
+    } else {
+      this.#points = points
+    }
+  }
+
   get name() {
     return this.#name
   }

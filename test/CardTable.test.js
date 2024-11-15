@@ -41,7 +41,7 @@ describe('CardTable', () => {
     expect(mockDeck.shuffle).toHaveBeenCalled()
   })
 
-  test('should deal cards to players when playing a round', () => {
+  test('should deal 5 cards to each player when playing a round', () => {
     cardTable.playRound()
 
     expect(mockDeck.dealCard).toHaveBeenCalledTimes(15)
@@ -84,7 +84,7 @@ describe('CardTable', () => {
     const previousRoundWinner = mockPlayers[1]
     cardTable.playRound(previousRoundWinner)
 
-    expect(mockPlayers[1].playCard).toHaveBeenCalled()
+    expect(mockPlayers[1].playCard).toHaveBeenCalled() // To have been called first?
   })
 
   test('should ensure that player index wraps around', () => {
@@ -94,7 +94,7 @@ describe('CardTable', () => {
     expect(mockPlayers[0].playCard).toHaveBeenCalled()
   })
 
-  test.todo('should call onRoundOver when all players have played all but one card')
+  test.todo('should add penalty points to player who wrongly claimed lowest card')
 
   test.todo('should check win conditions on round over')
 
