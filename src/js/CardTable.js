@@ -7,22 +7,20 @@ export class CardTable {
   #lowCardClaimer
   #roundCounter
   #turnCounter
+  #gameInstance
 
-  constructor(deck, players, onCardPlayed, onRoundOver, onGameEnd, displayMessage) {
+  constructor(deck, players, gameInstance) {
     this.#players = players
     this.#cardsInPlay = []
     this.#cardDeck = deck
     this.#discardPile = []
-    this.onCardPlayed = onCardPlayed
-    this.onRoundOver = onRoundOver
-    this.onGameEnd = onGameEnd
-    this.displayMessage = displayMessage
+    this.#gameInstance = gameInstance
     this.#roundCounter = 1
     this.#turnCounter = 1
   }
 
   playRound() {
-    this.displayMessage(`\nRound ${this.#roundCounter}!`)
+    this.#gameInstance.displayRoundCounter(this.#roundCounter)
     this.#shuffleDeck()
     this.#dealCards()
 
@@ -34,7 +32,7 @@ export class CardTable {
 
       const claimIsValid = this.#askWhoHoldsLowestCard()
       if (!claimIsValid) {
-        this.displayMessage('No one claimed to hold the lowest card. Restarting round.')
+        this.#gameInstance.restartingRound()
         // Need to discard players card here as well?
         this.#addCardsBackToDeck()
         continue
@@ -54,7 +52,7 @@ export class CardTable {
       this.playRound()
     }
 
-    // this.#gameOver()
+    // this.#gameEnd()
   }
 
   #shuffleDeck() {
@@ -74,7 +72,7 @@ export class CardTable {
   }
 
   #playTurns() {
-    this.displayMessage(`\nTurn ${this.#turnCounter}!`)
+    this.#gameInstance.displayTurnCounter(this.#turnCounter)
     let playerIndex = this.#startingPlayer ? this.#players.indexOf(this.#startingPlayer) : 0
     let cardsPlayed = 0
 
@@ -83,8 +81,7 @@ export class CardTable {
       const playedCard = player.playCard(this.#getHighestCard())
       this.#cardsInPlay.push({ playedCard, player })
 
-      // Send the played card to the onCardPlayed callback.
-      this.onCardPlayed(player, playedCard)
+      this.#gameInstance.onCardPlayed(player, playedCard)
 
       cardsPlayed++
       playerIndex = (playerIndex + 1) % this.#players.length
@@ -102,6 +99,7 @@ export class CardTable {
   #setTurnWinner() {
     const highestCard = this.#getHighestCard()
     this.#startingPlayer = highestCard.player
+    this.#gameInstance.onRoundOver(this.#startingPlayer)
   }
 
   #discardCardsFromTable() {
@@ -110,7 +108,6 @@ export class CardTable {
   }
 
   #askWhoHoldsLowestCard() {
-    this.displayMessage('\nAsking who holds the lowest card...')
     const lowestCardHolder = this.#findWhoHoldsTheLowestCard()
     const lowCardClaimer = this.#findLowCardClaimer()
 
@@ -157,9 +154,9 @@ export class CardTable {
   }
 
   #revealPlayerCards() {
-    this.displayMessage('\nRevealing player cards...')
+    this.#gameInstance.revealPlayerCards()
     for (const player of this.#players) {
-      player.cards.forEach(card => this.displayMessage(`${player.name} hold a ${card.toString()} (value: ${card.valueOf()})`))
+      player.cards.forEach(card => this.#gameInstance.onCardRevealed(player, card))
     }
   }
 
@@ -178,6 +175,7 @@ export class CardTable {
     for (const player of this.#players) {
       if (player !== this.#lowCardClaimer) {
         player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
+        this.#gameInstance.showPlayerPoints(player)
       }
     }
   }
@@ -194,6 +192,7 @@ export class CardTable {
     this.#players.forEach(player => {
       if (player.points >= 21) {
         player.addStrike()
+        this.#gameInstance.onPlayerReceivingStrike(player)
         player.points = highestSum
       }
     })
@@ -208,8 +207,7 @@ export class CardTable {
       const index = this.#players.indexOf(player)
       if (index > -1) {
         this.#players.splice(index, 1)
-        this.displayMessage(`\n${player.name} has received 3 strikes and has been eliminated.`)
-        // Don't want to bind the message to a console implementation.
+        this.#gameInstance.onPlayerEliminated(player)
       }
     })
   }

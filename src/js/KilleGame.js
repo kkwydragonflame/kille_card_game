@@ -14,7 +14,7 @@ export class KilleGame {
   #setupGame() {
     this.players = this.#generatePlayers()
     this.deck = DeckGenerator.generateDeck('kille')
-    this.cardTable = new CardTable(this.deck, this.players, this.onCardPlayed, this.onRoundOver, this.onGameEnd, this.displayMessage)
+    this.cardTable = new CardTable(this.deck, this.players, this)
   }
 
   #generatePlayers() {
@@ -29,15 +29,43 @@ export class KilleGame {
   }
 
   onCardPlayed(player, card) {
-    console.log(`${player.name} played a ${card.toString()} (value: ${card.valueOf()})`) // Violates Law of Demeter? Add printing value of card?
+    console.log(`${player.name} played a ${card.toString()} (value: ${card.valueOf()})`)
   }
 
-  displayMessage(message) {
-    console.log(message)
+  displayRoundCounter(round) {
+    console.log(`Round ${round}!`)
+  }
+
+  displayTurnCounter(turn) {
+    console.log(`Turn ${turn}!`)
+  }
+
+  showPlayerPoints(player) {
+    console.log(`${player.name} has ${player.points} points.`)
+  }
+
+  onPlayerReceivingStrike(player) {
+    console.log(`${player.name} received a strike!`)
+  }
+
+  onPlayerEliminated(player) {
+    console.log(`${player.name} received 3 strikes and has been eliminated!`)
+  }
+
+  restartingRound() {
+    console.log('No one claimed to hold the lowest card. Restarting round.')
   }
 
   onRoundOver(player) {
-    console.log(`Round over! ${player.name} won and gets to start next round!`)
+    console.log(`\nRound over! ${player.name} won and gets to start next round!\n`)
+  }
+
+  revealPlayerCards() {
+    console.log('\nRevealing player cards...')
+  }
+
+  onCardRevealed(player, card) {
+    console.log(`${player.name} holds a ${card.toString()} (value: ${card.valueOf()})`)
   }
 
   onGameEnd(player) {
