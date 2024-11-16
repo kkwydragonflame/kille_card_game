@@ -72,3 +72,9 @@ Not working is if two players are both holding the lowest card.
 Starting player is wrongly saved from last rounds last set turnwinner.
 Intermittent fault where third players points are not tallied correctly.
 Game starts immediately upon run.
+AI players choose algorithm for cards needs to be more tactical. IE not just choose among eligible cards at random.
+AI player atm just choose at random answering yes/no to holding the lowest card.
+Adding a pause to the console UI for a more natural flowing game. Atm one have to scroll up to read what happened in the round.
+Add a false or correct message for if the claim of holding the lowest card was true or not.
+
+BUG: Restarting round just asking for lowest card again, not actually restarting the round.

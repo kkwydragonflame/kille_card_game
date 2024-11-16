@@ -29,35 +29,35 @@ export class KilleGame {
   }
 
   onCardPlayed(player, card) {
-    console.log(`${player.name} played a ${card.toString()} (value: ${card.valueOf()})`)
+    console.log('\x1b[32m%s\x1b[0m', `${player.name} played a ${card.toString()} (value: ${card.valueOf()})`)
   }
 
   displayRoundCounter(round) {
-    console.log(`\nRound ${round}!\n`)
+    console.log('\x1b[31m%s\x1b[0m', `\nRound ${round}!\n`)
   }
 
   displayTurnCounter(turn) {
-    console.log(`Turn ${turn}!`)
+    console.log('\x1b[33m%s\x1b[0m', `Turn ${turn}!\n`)
   }
 
   lowestCardClaimed(player, hasLowestCard) {
     console.log(`\n${player.name} claim to ${hasLowestCard ? 'hold' : 'not hold'} the lowest card.`)
   }
 
-  showPlayerPoints(players) {
+  showPlayerScore(players) {
     console.log('\nRound over!')
     console.log('Tallying points:')
     players.forEach(player => {
-      console.log(`${player.name} received ${player.points} points. Current score: ${player.points}`)
+      console.log(`${player.name} current score: ${player.points}, strikes: ${player.strikeCount}`)
     })
   }
 
   onPlayerReceivingStrike(player) {
-    console.log(`${player.name} received a strike! New score: ${player.points}`)
+    console.log('\x1b[31m%s\x1b[0m', `${player.name} received a strike! New score: ${player.points}`)
   }
 
   onPlayerEliminated(player) {
-    console.log(`${player.name} received 3 strikes and has been eliminated!`)
+    console.log('\x1b[31m%s\x1b[0m', `${player.name} received 3 strikes and has been eliminated!`)
   }
 
   restartingRound() {
@@ -77,6 +77,6 @@ export class KilleGame {
   }
 
   onGameEnd(player) {
-    console.log(`\nGame finished! The winner is... ${player.name}!`)
+    console.log('\x1b[32m%s\x1b[0m', `\nGame finished! The winner is... ${player.name}!`)
   }
 }

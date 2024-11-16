@@ -41,7 +41,7 @@ export class CardTable {
     }
 
     this.#calculatePoints()
-    this.#gameInstance.showPlayerPoints(this.#players)
+    this.#gameInstance.showPlayerScore(this.#players)
     this.#discardPlayerCards()
     this.#checkAddToStrikeCount()
     this.#removePlayer(this.#checkStrikeCount())

@@ -9,7 +9,7 @@ export class ConsoleInputHandler {
 
     while (!isValidInput) {
       try {
-        const userInput = readlineSync.question('Please enter the number of the card you wish to play: ')
+        const userInput = readlineSync.question('\nPlease enter the number of the card you wish to play: ')
 
         isValidInput = this.#validateInput(userInput, cards.length)
 
@@ -43,7 +43,7 @@ export class ConsoleInputHandler {
 
   displayChoiceMessage(eligibleCards) {
     if (eligibleCards.length === 0) {
-      console.log('You have no eligible cards. You must sacrifice your lowest card.')
+      console.log('\nYou have no eligible cards. You must sacrifice your lowest card.')
     } else {
       console.log('Choose a card to play.')
     }
@@ -54,6 +54,6 @@ export class ConsoleInputHandler {
   }
 
   displayMustPlayLowestCard() {
-    console.log('You must play your lowest card.')
+    console.log('\nYou must play your lowest card.')
   }
 }
