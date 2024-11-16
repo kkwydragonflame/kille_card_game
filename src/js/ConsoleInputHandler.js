@@ -1,10 +1,6 @@
 import readlineSync from 'readline-sync'
 
 export class ConsoleInputHandler {
-  displayMessage(message) {
-    console.log(message)
-  }
-
   waitForUserInput(cards) {
     let isValidInput = false
     let cardIndex = -1
@@ -13,7 +9,7 @@ export class ConsoleInputHandler {
 
     while (!isValidInput) {
       try {
-        const userInput = readlineSync.question('Please enter the number of the card you want to play: ')
+        const userInput = readlineSync.question('Please enter the number of the card you wish to play: ')
 
         isValidInput = this.#validateInput(userInput, cards.length)
 
@@ -42,7 +38,22 @@ export class ConsoleInputHandler {
   }
 
   askIfHasLowestCard() {
-    // return readlineSync.keyInYNStrict('Do you think you hold the lowest card?')
-    return true
+    return readlineSync.keyInYNStrict('Do you think you hold the lowest card?')
+  }
+
+  displayChoiceMessage(eligibleCards) {
+    if (eligibleCards.length === 0) {
+      console.log('You have no eligible cards. You must sacrifice your lowest card.')
+    } else {
+      console.log('Choose a card to play.')
+    }
+  }
+
+  displayCardNotValid() {
+    console.log('Card is not a valid choice. Please select again.')
+  }
+
+  displayMustPlayLowestCard() {
+    console.log('You must play your lowest card.')
   }
 }

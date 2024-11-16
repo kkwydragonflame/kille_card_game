@@ -10,7 +10,7 @@ The app is modular and built to easily support different types of user interface
 
 - Single-player game against three AI opponents.
 - AI players make decisions based on a simple algorithm.
-- Modular design allows for the user interface to be swapped out in the future.
+- Modular design allows for the user interface to be swapped out in the future. See [Switching to different UI](#switching-to-different-ui).
 
 ## Installation
 
@@ -56,6 +56,10 @@ See [Rules](rules.md)
 - **Multiplayer Support**: Ability to play with multiple human players.
 - **Graphical User Interface (GUI)**: A visual version of the game for a more user-friendly experience.
 
+## Switching to different UI
+
+Simply use the KilleGame and ConsoleInputHandler files as templates, providing the same named methods with updated logic, to implement whichever UI you prefer.
+
 ## Contributing
 
 If you'd like to contribute to the project, feel free to fork the repository and submit a pull request. All contributions are welcome!
@@ -72,5 +76,4 @@ See the [LICENSE](LICENSE) file for details.
 ## Contact
 
 For any questions or feedback, feel free to contact me at:
-- **Email**: your-email@example.com
 - **GitHub**: [your-username](https://github.com/your-username)

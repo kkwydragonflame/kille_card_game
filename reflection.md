@@ -71,3 +71,4 @@ CardTable is quite big. Should probably be split into several classes, one holdi
 Not working is if two players are both holding the lowest card.
 Starting player is wrongly saved from last rounds last set turnwinner.
 Intermittent fault where third players points are not tallied correctly.
+Game starts immediately upon run.
