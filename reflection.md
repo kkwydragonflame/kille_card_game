@@ -67,3 +67,7 @@ I refactored my starting file, so that instead of providing callbacks I provided
 Improvement needed, like adding pauses in the game in appropriate places for a more natural feeling flow of the game.
 
 CardTable is quite big. Should probably be split into several classes, one holding the table where cards are played and one holding the game flow logic. This was just simpler.
+
+Not working is if two players are both holding the lowest card.
+Starting player is wrongly saved from last rounds last set turnwinner.
+Intermittent fault where third players points are not tallied correctly.
