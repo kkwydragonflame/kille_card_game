@@ -1,20 +1,20 @@
 export class CardTable {
-  #players
-  #cardsInPlay
   #cardDeck
+  #players
+  #gameInstance
+  #cardsInPlay
   #discardPile
-  #startingPlayer
-  #lowCardClaimer
   #roundCounter
   #turnCounter
-  #gameInstance
+  #startingPlayer
+  #lowCardClaimer
 
   constructor(deck, players, gameInstance) {
     this.#players = players
-    this.#cardsInPlay = []
     this.#cardDeck = deck
-    this.#discardPile = []
     this.#gameInstance = gameInstance
+    this.#cardsInPlay = []
+    this.#discardPile = []
     this.#roundCounter = 1
     this.#turnCounter = 1
   }
@@ -41,6 +41,7 @@ export class CardTable {
     }
 
     this.#calculatePoints()
+    this.#gameInstance.showPlayerPoints(this.#players)
     this.#discardPlayerCards()
     this.#checkAddToStrikeCount()
     this.#removePlayer(this.#checkStrikeCount())
@@ -49,10 +50,9 @@ export class CardTable {
       this.#addCardsBackToDeck()
       this.#roundCounter++
       this.#turnCounter = 1
+      this.#startingPlayer = null // Reset starting player for next round. Should create a fair way to pass this around the players.
       this.playRound()
     }
-
-    // this.#gameEnd()
   }
 
   #shuffleDeck() {
@@ -89,6 +89,9 @@ export class CardTable {
 
     this.#turnCounter++
     this.#setTurnWinner()
+    if (this.#turnCounter <= 4) {
+      this.#gameInstance.onTurnOver(this.#startingPlayer)
+    }
     this.#discardCardsFromTable()
   }
 
@@ -99,7 +102,6 @@ export class CardTable {
   #setTurnWinner() {
     const highestCard = this.#getHighestCard()
     this.#startingPlayer = highestCard.player
-    this.#gameInstance.onRoundOver(this.#startingPlayer)
   }
 
   #discardCardsFromTable() {
@@ -131,7 +133,7 @@ export class CardTable {
     while (playersAsked < this.#players.length) {
       const player = this.#players[playerIndex]
       const hasLowestCard = player.playStrategy.askIfHasLowestCard()
-      this.displayMessage(`${player.name} claim to ${hasLowestCard ? 'hold' : 'not hold'} the lowest card.`)
+      this.#gameInstance.lowestCardClaimed(player, hasLowestCard)
       if (hasLowestCard) {
         return player
       }
@@ -175,7 +177,6 @@ export class CardTable {
     for (const player of this.#players) {
       if (player !== this.#lowCardClaimer) {
         player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
-        this.#gameInstance.showPlayerPoints(player)
       }
     }
   }
@@ -192,8 +193,8 @@ export class CardTable {
     this.#players.forEach(player => {
       if (player.points >= 21) {
         player.addStrike()
-        this.#gameInstance.onPlayerReceivingStrike(player)
         player.points = highestSum
+        this.#gameInstance.onPlayerReceivingStrike(player)
       }
     })
   }
@@ -215,7 +216,7 @@ export class CardTable {
   #checkWinCondition() {
     // Last Man Standing win scenario.
     if (this.#players.length === 1) {
-      this.onGameEnd(this.#players[0])
+      this.#gameInstance.onGameEnd(this.#players[0])
       return true
     }
 

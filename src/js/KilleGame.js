@@ -33,19 +33,27 @@ export class KilleGame {
   }
 
   displayRoundCounter(round) {
-    console.log(`Round ${round}!`)
+    console.log(`\nRound ${round}!\n`)
   }
 
   displayTurnCounter(turn) {
     console.log(`Turn ${turn}!`)
   }
 
-  showPlayerPoints(player) {
-    console.log(`${player.name} has ${player.points} points.`)
+  lowestCardClaimed(player, hasLowestCard) {
+    console.log(`\n${player.name} claim to ${hasLowestCard ? 'hold' : 'not hold'} the lowest card.`)
+  }
+
+  showPlayerPoints(players) {
+    console.log('\nRound over!')
+    console.log('Tallying points:')
+    players.forEach(player => {
+      console.log(`${player.name} received ${player.points} points. Current score: ${player.points}`)
+    })
   }
 
   onPlayerReceivingStrike(player) {
-    console.log(`${player.name} received a strike!`)
+    console.log(`${player.name} received a strike! New score: ${player.points}`)
   }
 
   onPlayerEliminated(player) {
@@ -56,8 +64,8 @@ export class KilleGame {
     console.log('No one claimed to hold the lowest card. Restarting round.')
   }
 
-  onRoundOver(player) {
-    console.log(`\nRound over! ${player.name} won and gets to start next round!\n`)
+  onTurnOver(player) {
+    console.log(`\nTurn over! ${player.name} won and will begin next round!\n`)
   }
 
   revealPlayerCards() {
@@ -65,10 +73,10 @@ export class KilleGame {
   }
 
   onCardRevealed(player, card) {
-    console.log(`${player.name} holds a ${card.toString()} (value: ${card.valueOf()})`)
+    console.log(`${player.name} hold/holds a ${card.toString()} (value: ${card.valueOf()})`)
   }
 
   onGameEnd(player) {
-    console.log(`Game finished! The winner is... ${player.name}!`)
+    console.log(`\nGame finished! The winner is... ${player.name}!`)
   }
 }
