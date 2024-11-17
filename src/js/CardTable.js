@@ -60,7 +60,7 @@ export class CardTable {
   }
 
   #dealCards() {
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 5; i++) { // Magic number here! Change to a constant.
       this.#players.forEach(player => {
         player.addCardToHand(this.#cardDeck.dealCard())
       })
