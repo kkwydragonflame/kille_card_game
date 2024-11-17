@@ -8,8 +8,10 @@ describe('HumanPlayStrategy', () => {
   beforeEach(() => {
     mockInputHandler = {
       waitForUserInput: jest.fn(),
-      displayMessage: jest.fn(),
-      askIfHasLowestCard: jest.fn()
+      displayChoiceMessage: jest.fn(),
+      askIfHasLowestCard: jest.fn(),
+      displayCardNotValid: jest.fn(),
+      displayMustPlayLowestCard: jest.fn()
     }
     humanPlayStrategy = new HumanPlayStrategy(mockInputHandler)
   })
@@ -33,7 +35,7 @@ describe('HumanPlayStrategy', () => {
 
     expect(chosenCard).toEqual(mockEligibleCards[0])
 
-    expect(mockInputHandler.displayMessage).toHaveBeenCalledWith('Choose a card to play.')
+    expect(mockInputHandler.displayChoiceMessage).toHaveBeenCalledWith(mockEligibleCards)
   })
 
   test('should prompt again if an invalid card is chosen', () => {
@@ -45,19 +47,21 @@ describe('HumanPlayStrategy', () => {
 
     expect(chosenCard).toEqual(mockEligibleCards[1])
 
-    expect(mockInputHandler.displayMessage).toHaveBeenCalledWith('Card is not a valid choice. Please select again.')
+    expect(mockInputHandler.displayCardNotValid).toHaveBeenCalled()
   })
 
   test('should prompt to play lowest card if no eligible cards', () => {
     const lowestCard = mockCards[0]
 
-    mockInputHandler.waitForUserInput.mockReturnValue(lowestCard)
+    mockInputHandler.waitForUserInput
+      .mockReturnValueOnce(mockCards[1]) // First choice is invalid
+      .mockReturnValueOnce(lowestCard) // Second choice is the lowest card
 
     const chosenCard = humanPlayStrategy.chooseCardToPlay([], mockCards)
 
     expect(chosenCard).toEqual(lowestCard)
 
-    expect(mockInputHandler.displayMessage).toHaveBeenCalledWith('You have no eligible cards. You must sacrifice your lowest card.')
+    expect(mockInputHandler.displayMustPlayLowestCard).toHaveBeenCalled()
   })
 
   test('should ask if player has the lowest card', () => {

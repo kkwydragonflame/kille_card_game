@@ -91,3 +91,4 @@ Overall, this project taught me the value of flexibility, clarity, and simplicit
 * **Second Win Condition**: Implement logic to handle a second win scenario—if all players except one receive a strike in a round.
 * **Strike Tie Resolution**: Add functionality to address cases where all players receive a strike in the same round.
 * **Lowest Card Tie**: Introduce rules and logic to handle situations where two players hold the lowest card during a round.
+* **Add tests for CardTable**: Create better tests for the CardTable class.
