@@ -8,7 +8,8 @@ describe('HumanPlayStrategy', () => {
   beforeEach(() => {
     mockInputHandler = {
       waitForUserInput: jest.fn(),
-      displayMessage: jest.fn()
+      displayMessage: jest.fn(),
+      askIfHasLowestCard: jest.fn()
     }
     humanPlayStrategy = new HumanPlayStrategy(mockInputHandler)
   })
@@ -57,5 +58,14 @@ describe('HumanPlayStrategy', () => {
     expect(chosenCard).toEqual(lowestCard)
 
     expect(mockInputHandler.displayMessage).toHaveBeenCalledWith('You have no eligible cards. You must sacrifice your lowest card.')
+  })
+
+  test('should ask if player has the lowest card', () => {
+    mockInputHandler.askIfHasLowestCard.mockReturnValue(true)
+
+    const hasLowestCard = humanPlayStrategy.askIfHasLowestCard()
+
+    expect(hasLowestCard).toBe(true)
+    expect(mockInputHandler.askIfHasLowestCard).toHaveBeenCalled()
   })
 })

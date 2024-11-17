@@ -47,7 +47,13 @@ describe('CardTable', () => {
     expect(mockDeck.dealCard).toHaveBeenCalledTimes(15)
   })
 
-  test.todo('verify that cards are dealt to players')
+  test('should verify that cards are dealt to players', () => {
+    cardTable.playRound()
+
+    mockPlayers.forEach(player => {
+      expect(player.addCardToHand).toHaveBeenCalledTimes(5)
+    })
+  })
 
   test('should play cards in order of player index', () => {
     mockPlayers.forEach((player, index) => {
@@ -94,9 +100,31 @@ describe('CardTable', () => {
     expect(mockPlayers[0].playCard).toHaveBeenCalled()
   })
 
-  test.todo('should add penalty points to player who wrongly claimed lowest card')
+  test('should add penalty points to player who wrongly claimed lowest card', () => {
+    const wrongClaimer = mockPlayers[0]
+    wrongClaimer.playStrategy.askIfHasLowestCard.mockReturnValue(true)
+    mockPlayers[1].playStrategy.askIfHasLowestCard.mockReturnValue(false)
+    mockPlayers[2].playStrategy.askIfHasLowestCard.mockReturnValue(false)
 
-  test.todo('should check win conditions on round over')
+    cardTable.playRound()
 
-  test.todo('should announce winner on game end')
+    expect(wrongClaimer.addPoints).toHaveBeenCalledWith(5)
+  })
+
+  test('should check win conditions on round over', () => {
+    const checkWinConditionSpy = jest.spyOn(cardTable, '#checkWinCondition')
+
+    cardTable.playRound()
+
+    expect(checkWinConditionSpy).toHaveBeenCalled()
+  })
+
+  test('should announce winner on game end', () => {
+    mockPlayers.splice(1, 2) // Simulate only one player left
+    const winner = mockPlayers[0]
+
+    cardTable.playRound()
+
+    expect(onRoundOver).toHaveBeenCalledWith(winner)
+  })
 })
