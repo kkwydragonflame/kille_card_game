@@ -31,7 +31,7 @@ I have taken to heart the ordering of methods, and am keeping The Newspaper Meta
 *Before I would put setters and getters highest in the class. Now I place the most relevant method at the top and the least relevant methods at the bottom, and placing the calling method above its helper methods.*
 
 ## Chapter 6: Objects and Data Structures
-This chapter deepened my understanding of the distinction between objects and data structures and the importance of encapsulation. While encapsulation has already been something I knew was important, it has only been after reading this chapter that I've seen more indepth how abstracting away details can also help in developing code. So now I place more importance and thought into keeping things encapsulated and only using public as a last resort where it makes logical sense.
+This chapter deepened my understanding of the distinction between objects and data structures and the importance of encapsulation. While encapsulation has already been something I knew was important, it has only been after reading this chapter that I've seen more in depth how abstracting away details can also help in developing code. So now I place more importance and thought into keeping things encapsulated and only using public as a last resort where it makes logical sense.
 I’ve been trying to focus on designing classes that expose behavior rather than just data. For example, in CardTable, I’ve kept most of the internal state private and only allowed access through methods that make sense in the context of the game. That said, I know I could do better — CardTable is doing too much and would probably benefit from being split into smaller, more focused classes. I’m definitely more aware now of how important it is to reduce dependencies and keep things flexible, even if I’m still figuring out how to get it right.
 
 ## Chapter 7: Error Handling
@@ -48,7 +48,7 @@ I originally used readline for user input, but it caused a chain of async calls 
 ## Chapter 9: Unit Tests
 This chapter reinforced the necessity of unit testing in my development workflow. I’ve realized how well-written tests can provide security during development, and I wish to aim to make my tests as clear and informative as the code itself. I do find it fun to write tests but I often feel that my current knowledge is a bit lacking. I feel a greater motivation and need to learn more about testing framework and functions after this course.
 When Martin wrote about the common mistake of writing affirmative tests after the production code I recognized myself a lot. More often than I'd like I add tests after writing the actual code. This is an area in which I hope to improve a lot.
-I do feel that I've managed to keep my tests quite clean, simple and minimising the number of asserts. I'm certain a more experienced developer could write much improved tests, but I am still feeling quite satisfied over my tests for my Lab2 lib.
+I do feel that I've managed to keep my tests quite clean, simple and minimising the number of asserts. I'm certain a more experienced developer could write much improved tests, but I am still feeling quite satisfied about my tests for my Lab2 lib.
 
 ![testing_screenshot](./screenshots/testing_screenshot.png)
 
