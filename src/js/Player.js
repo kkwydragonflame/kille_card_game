@@ -26,7 +26,9 @@ export class Player {
   }
 
   #getEligibleCards(highestCard) {
-    return !highestCard ? this.#cards : this.#cards.filter(card => card.valueOf() >= highestCard.valueOf())
+    return highestCard
+      ? this.#cards.filter(card => parseFloat(card.valueOf()) >= parseFloat(highestCard.valueOf()))
+      : [...this.#cards]
   }
 
   removeCardFromHand(card) {

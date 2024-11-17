@@ -21,7 +21,7 @@ export class HumanPlayStrategy {
   }
 
   #getLowestCard(cards) {
-    return cards.sort((a, b) => a.valueOf() - b.valueOf())[0]
+    return cards.sort((a, b) => parseFloat(a.valueOf()) - parseFloat(b.valueOf()))[0]
   }
 
   #isChoiceValid(userChoice, eligibleCards, lowestCard) {

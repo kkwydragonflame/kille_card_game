@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/kkwydragonflame/kille_card_game#readme",
   "dependencies": {
-    "laboration2": "github:kkwydragonflame/L2",
+    "laboration2": "github:kkwydragonflame/L2#main",
     "readline-sync": "^1.4.10"
   },
   "devDependencies": {

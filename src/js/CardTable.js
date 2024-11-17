@@ -33,7 +33,6 @@ export class CardTable {
       const claimIsValid = this.#askWhoHoldsLowestCard()
       if (!claimIsValid) {
         this.#gameInstance.restartingRound()
-        // Need to discard players card here as well?
         this.#addCardsBackToDeck()
         continue
       }
@@ -50,7 +49,7 @@ export class CardTable {
       this.#addCardsBackToDeck()
       this.#roundCounter++
       this.#turnCounter = 1
-      this.#startingPlayer = null // Reset starting player for next round. Should create a fair way to pass this around the players.
+      this.#startingPlayer = null
       this.playRound()
     }
   }
@@ -60,7 +59,7 @@ export class CardTable {
   }
 
   #dealCards() {
-    for (let i = 0; i < 5; i++) { // Magic number here! Change to a constant.
+    for (let i = 0; i < 5; i++) {
       this.#players.forEach(player => {
         player.addCardToHand(this.#cardDeck.dealCard())
       })
@@ -78,7 +77,8 @@ export class CardTable {
 
     while (cardsPlayed < this.#players.length) {
       const player = this.#players[playerIndex]
-      const playedCard = player.playCard(this.#getHighestCard())
+      const highestCard = this.#getHighestCard()?.playedCard
+      const playedCard = player.playCard(highestCard)
       this.#cardsInPlay.push({ playedCard, player })
 
       this.#gameInstance.onCardPlayed(player, playedCard)
@@ -173,10 +173,9 @@ export class CardTable {
   }
 
   #calculatePoints() {
-    // Add points to each player, except for lowCardClaimer if correct.
     for (const player of this.#players) {
       if (player !== this.#lowCardClaimer) {
-        player.addPoints(player.cards.reduce((acc, card) => acc + card.valueOf(), 0))
+        player.addPoints(player.cards.reduce((sum, card) => sum + card.valueOf(), 0))
       }
     }
   }
@@ -220,12 +219,8 @@ export class CardTable {
       return true
     }
 
-    // Second win scenario.
-    if (this.#players.length === 2) {
-      // need to add a boolean to each player for receiving a strike this round.
-      // compare the boolean values to determine if all but one received a strike.
-    }
-    // should I return true or false here to have playRound method call gameEnd? Or should I call gameEnd here?
+    // Add more win conditions here.
+
     return false
   }
 
@@ -233,7 +228,7 @@ export class CardTable {
     this.#discardCardsFromTable()
 
     while (this.#discardPile.length) {
-      this.#cardDeck.addCardToBottomOfDeck(this.#discardPile.pop())
+      this.#cardDeck.addCardToDeck(this.#discardPile.pop(), 2)
     }
   }
 }

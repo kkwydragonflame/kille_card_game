@@ -78,8 +78,12 @@ Overall, this project taught me the value of flexibility, clarity, and simplicit
 
 
 ### Key Areas for Improvement (ie stuff that needs fixing)
+* **Reduce method size in CardTable**: Several methods needs to be refactored into smaller versions, with helper methods. This is a work in progress.
+* **Documentation**: Adding JSDocs to each non-self-descriptive method in the public interface.
+* **Remove Magic Numbers**: Replace the use of magic numbers (number of cards to deal, points value before receiving a strike, number of strikes allowed etc) with constants.
 * **Round Restart Logic**: When no player claims to hold the lowest card, the method incorrectly asks again instead of restarting the round.
 * **Gameplay Flow**: Add pauses during gameplay to improve the flow and overall user experience.
+* **Early exit**: Add logic for ending program early if user wishes.
 * **Claim Validation**: Implement checks and messages to indicate whether a player correctly or incorrectly claimed to hold the lowest card.
 * **Turn Rotation**: Develop logic to rotate starting players for each round. Currently, rounds always begin with the first-index player, which is not ideal.
 * **Main Menu**: Create a start menu for player options, such as entering player names, reading the rules, and starting the game. While this could be considered the responsibility of the UI layer rather than the core game mechanics, it would improve the user experience significantly.
